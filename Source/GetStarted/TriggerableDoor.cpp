@@ -82,11 +82,16 @@ void ATriggerableDoor::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AA
 	AMainPlayer* MainPlayer = Cast<AMainPlayer>(OtherActor);
 	if (MainPlayer)
 	{
-		GetWorldTimerManager().SetTimer(CloseDoorTimeHandle, this, &ATriggerableDoor::CloseDoor, DelayTime);
+
 		//升高台子
 		RaiseTrigger();
-		//关门
-		CloseDoor();
+
+		//延时关门
+		GetWorldTimerManager().SetTimer(CloseDoorTimeHandle, this, &ATriggerableDoor::CloseDoor, DelayTime);
+
+		
+		////关门
+		//CloseDoor();
 	}
 }
 
