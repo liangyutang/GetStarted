@@ -19,8 +19,13 @@ ATriggerableDoor::ATriggerableDoor()
 	TriggerBox->SetBoxExtent(FVector(60.0f, 60.0f, 30.0f));
 
 	//设置触发器的碰撞检测
-	//设置体积的状态-仅
+	//设置体积的状态-仅查询
 	TriggerBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	//指定当前的碰撞类型
+	TriggerBox->SetCollisionObjectType(ECC_WorldStatic);
+	//只响应pawn，其他不响应
+	TriggerBox->SetCollisionResponseToAllChannels(ECR_Ignore);
+	TriggerBox->SetCollisionResponseToChannel(ECC_Pawn,ECR_Ignore);
 
 
 	DoorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorMesh"));
