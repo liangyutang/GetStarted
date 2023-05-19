@@ -4,6 +4,7 @@
 #include "TriggerableDoor.h"
 
 #include "Components/BoxComponent.h"
+#include "MainPlayer.h"
 
 // Sets default values
 ATriggerableDoor::ATriggerableDoor()
@@ -13,6 +14,14 @@ ATriggerableDoor::ATriggerableDoor()
 
 	TriggerBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox"));
 	RootComponent = TriggerBox;
+
+	//设置触发器大小
+	TriggerBox->SetBoxExtent(FVector(60.0f, 60.0f, 30.0f));
+
+	//设置触发器的碰撞检测
+	//设置体积的状态-仅
+	TriggerBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+
 
 	DoorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorMesh"));
 	DoorMesh->SetupAttachment(GetRootComponent());
@@ -44,10 +53,22 @@ void ATriggerableDoor::Tick(float DeltaTime)
 void ATriggerableDoor::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	//触碰Trigger的物体判断,是否为玩家
+	AMainPlayer* MainPlayer = Cast<AMainPlayer>(OtherActor);
+	if (MainPlayer)
+	{
+		
+	}
 }
 
 void ATriggerableDoor::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
+	//触碰Trigger的物体判断,是否为玩家
+	AMainPlayer* MainPlayer = Cast<AMainPlayer>(OtherActor);
+	if (MainPlayer)
+	{
+
+	}
 }
 
