@@ -32,7 +32,5 @@ void UMainPlayerAnimInstance::UpdateAnimationProperties()
 
 		//ÊÇ·ñÎª¿ÕÖÐ
 		bIsInAir = PlayerRef->GetMovementComponent()->IsFalling();
-		int a = 0;
-		int b = 1;
 	}
 }
