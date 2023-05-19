@@ -45,6 +45,10 @@ void ATriggerableDoor::BeginPlay()
 
 	//当重叠事件结束时
 	TriggerBox->OnComponentEndOverlap.AddDynamic(this,&ATriggerableDoor::OnOverlapEnd);
+
+	//获取触发器与门的初始位置
+	InitTriggerLocation = TriggerMesh->GetComponentLocation();
+	InitDoorLocation = DoorMesh->GetComponentLocation();
 	
 }
 
@@ -81,5 +85,19 @@ void ATriggerableDoor::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AA
 		//关门
 		CloseDoor();
 	}
+}
+
+void ATriggerableDoor::UpdateTriggerLocation(FVector Offset)
+{
+	//设置触发器的新位置
+	FVector NewLoction = InitTriggerLocation + Offset;
+	TriggerMesh->SetWorldLocation(NewLoction);
+}
+
+void ATriggerableDoor::UpdateDoorLocation(FVector Offset)
+{
+	//设置门的新位置
+	FVector NewLoction = InitDoorLocation + Offset;
+	DoorMesh->SetWorldLocation(NewLoction);
 }
 

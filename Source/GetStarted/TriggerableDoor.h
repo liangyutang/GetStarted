@@ -28,6 +28,12 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	class UBoxComponent* TriggerBox;
 
+	UPROPERTY(BlueprintReadWrite,Category="Triggerable Door|Trigger Properties")
+	FVector InitTriggerLocation;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Triggerable Door|Door Properties")
+	FVector InitDoorLocation;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -54,4 +60,10 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Triggerable Door|Door Switch")
 	void CloseDoor();
+
+	UFUNCTION(BlueprintCallable, Category = "Triggerable Door|Trigger Switch")
+	void UpdateTriggerLocation(FVector Offset);
+
+	UFUNCTION(BlueprintCallable, Category = "Triggerable Door|Door Switch")
+	void UpdateDoorLocation(FVector Offset);
 };
