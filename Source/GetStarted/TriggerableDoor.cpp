@@ -62,7 +62,10 @@ void ATriggerableDoor::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, 
 	AMainPlayer* MainPlayer = Cast<AMainPlayer>(OtherActor);
 	if (MainPlayer)
 	{
-		
+		//开门
+		OpenDoor();
+		//降低台子
+		LowerTrigger();
 	}
 }
 
@@ -73,7 +76,10 @@ void ATriggerableDoor::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AA
 	AMainPlayer* MainPlayer = Cast<AMainPlayer>(OtherActor);
 	if (MainPlayer)
 	{
-
+		//升高台子
+		RaiseTrigger();
+		//关门
+		CloseDoor();
 	}
 }
 
