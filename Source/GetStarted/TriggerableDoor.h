@@ -41,6 +41,8 @@ public:
 	//触发器关闭时的定时器
 	FTimerHandle CloseDoorTimeHandle;
 
+	bool bIsPlayerOnTrigger;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
