@@ -20,7 +20,7 @@ public:
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite)
 	UStaticMeshComponent* DoorMesh;
 
-	//触发器
+	//玩家看到的触发器
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* TriggerMesh;
 
@@ -36,4 +36,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+
+	UFUNCTION()
+	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 };
