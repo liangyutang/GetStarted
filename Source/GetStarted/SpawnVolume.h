@@ -31,4 +31,11 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	//获取随机一个点
+	UFUNCTION(BlueprintCallable, Category = "Spawn Volume")
+	FVector GetSpawnPoint();
+
+	//获取随机AActor的一个子类
+	UFUNCTION(BlueprintCallable, Category = "Spawn Volume")
+	TSubclassOf<AActor> GetSpawnActorClass();
 };
