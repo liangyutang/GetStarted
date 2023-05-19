@@ -58,6 +58,7 @@ public:
 	UFUNCTION()
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32  OtherBodyIndex);
 
+	//反射有BlueprintImplementableEvent，则不需要在c++中创建实现方法，在蓝图中使用，类似与BeginPlay的用法
 	UFUNCTION(BlueprintImplementableEvent,Category="Triggerable Door|Trigger Switch")
 	void RaiseTrigger();
 

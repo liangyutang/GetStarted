@@ -53,3 +53,9 @@ TSubclassOf<AActor> ASpawnVolume::GetSpawnActorClass()
 	}
 }
 
+//c++д╛хой╣ож
+void ASpawnVolume::SpawnActor_Implementation(float Value)
+{
+
+}
+

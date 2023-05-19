@@ -38,4 +38,8 @@ public:
 	//获取随机AActor的一个子类
 	UFUNCTION(BlueprintCallable, Category = "Spawn Volume")
 	TSubclassOf<AActor> GetSpawnActorClass();
+
+	//函数反射有BlueprintNativeEvent(事件)，要实现函数时，需要在函数名后加_Implementation
+	UFUNCTION(BlueprintNativeEvent,BlueprintCallable,Category="Spawn Volume")
+	void SpawnActor(float Value);
 };
