@@ -54,8 +54,12 @@ TSubclassOf<AActor> ASpawnVolume::GetSpawnActorClass()
 }
 
 //c++默认实现
-void ASpawnVolume::SpawnActor_Implementation(float Value)
+void ASpawnVolume::SpawnActor_Implementation(UClass* SpwanClass, FVector SpawnLocation)
 {
-
+	if (SpwanClass)
+	{
+		//SpawnActor<AActor>：生成一个AActor类型的指针，AActor具体类型看UClass(SpawnClass)
+		GetWorld()->SpawnActor<AActor>(SpwanClass, SpawnLocation, FRotator(0.0f));
+	}
 }
 
