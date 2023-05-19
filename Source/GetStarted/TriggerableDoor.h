@@ -34,6 +34,13 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "Triggerable Door|Door Properties")
 	FVector InitDoorLocation;
 
+	//延迟时间
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Triggerable Door|Door Properties")
+	float DelayTime;
+
+	//触发器关闭时的定时器
+	FTimerHandle CloseDoorTimeHandle;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

@@ -34,6 +34,8 @@ ATriggerableDoor::ATriggerableDoor()
 	TriggerMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TriggerMesh"));
 	TriggerMesh->SetupAttachment(GetRootComponent());
 
+	DelayTime = 1.5f;
+
 }
 
 // Called when the game starts or when spawned
@@ -80,6 +82,7 @@ void ATriggerableDoor::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AA
 	AMainPlayer* MainPlayer = Cast<AMainPlayer>(OtherActor);
 	if (MainPlayer)
 	{
+		GetWorldTimerManager().SetTimer(CloseDoorTimeHandle, this, &ATriggerableDoor::CloseDoor, DelayTime);
 		//升高台子
 		RaiseTrigger();
 		//关门
