@@ -30,6 +30,19 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Floating Platform")
 	float InterpSpeed;
 
+	//延迟时间
+	UPROPERTY(EditAnywhere, Category = "Floating Platform")
+	float DelayTime;
+
+	//是否在运动中（是否正在延迟）
+	bool bInterping;
+
+	//计时器的句柄
+	FTimerHandle InterpTimerHandle;
+
+	//开始与结束的距离
+	float Distance;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

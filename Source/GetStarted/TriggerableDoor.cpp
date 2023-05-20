@@ -69,13 +69,13 @@ void ATriggerableDoor::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, 
 	AMainPlayer* MainPlayer = Cast<AMainPlayer>(OtherActor);
 	if (MainPlayer)
 	{
-		//针对玩家不停触发Trigger，导致开关门出错，有以下解决方法方法一：
-		//GetWorldTimerManager().ClearTimer(CloseDoorTimeHandle);
+		//针对玩家不停触发Trigger，导致开关门出错，有以下解决方法方法一：清楚定时器
+		GetWorldTimerManager().ClearTimer(CloseDoorTimeHandle);
 		//方法二为“bIsPlayerOnTrigger”法
-		if (!bIsPlayerOnTrigger)
-		{
-			bIsPlayerOnTrigger = true;
-		}
+		//if (!bIsPlayerOnTrigger)
+		//{
+		//	bIsPlayerOnTrigger = true;
+		//}
 
 
 		//开门
@@ -92,29 +92,29 @@ void ATriggerableDoor::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AA
 	AMainPlayer* MainPlayer = Cast<AMainPlayer>(OtherActor);
 	if (MainPlayer)
 	{
-		if (bIsPlayerOnTrigger)
-		{
-			bIsPlayerOnTrigger = false;
-		}
+		//if (bIsPlayerOnTrigger)
+		//{
+		//	bIsPlayerOnTrigger = false;
+		//}
 
 		//升高台子
 		RaiseTrigger();
 
 		//方法二：Lambda表达式，[]捕获列表，()参数列表，{}函数体
-		auto DalyColseDoor = [this]()
-		{
-			if (!bIsPlayerOnTrigger)
-			{
-				CloseDoor();
-			}
-		};
+		//auto DalyColseDoor = [this]()
+		//{
+		//	if (!bIsPlayerOnTrigger)
+		//	{
+		//		CloseDoor();
+		//	}
+		//};
 
 		//延时关门
 
 		//方法一
-		//GetWorldTimerManager().SetTimer(CloseDoorTimeHandle, this, &ATriggerableDoor::CloseDoor, DelayTime);
+		GetWorldTimerManager().SetTimer(CloseDoorTimeHandle, this, &ATriggerableDoor::CloseDoor, DelayTime);
 		//方法二
-		GetWorldTimerManager().SetTimer(CloseDoorTimeHandle, FTimerDelegate::CreateLambda(DalyColseDoor), DelayTime,false);
+		//GetWorldTimerManager().SetTimer(CloseDoorTimeHandle, FTimerDelegate::CreateLambda(DalyColseDoor), DelayTime,false);
 
 		////关门
 		//CloseDoor();
