@@ -42,5 +42,5 @@ public:
 
 	//函数反射有BlueprintNativeEvent(事件)，要实现函数时，需要在函数名后加_Implementation
 	UFUNCTION(BlueprintNativeEvent,BlueprintCallable,Category="Spawn Volume")
-	void SpawnActor(UClass* SpwanClass,FVector SpawnLocation);
+	void SpawnActor(UClass* SpwanClass,const FVector SpawnLocation);
 };

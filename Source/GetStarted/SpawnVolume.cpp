@@ -54,7 +54,7 @@ TSubclassOf<AActor> ASpawnVolume::GetSpawnActorClass()
 }
 
 //c++д╛хой╣ож
-void ASpawnVolume::SpawnActor_Implementation(UClass* SpwanClass, FVector SpawnLocation)
+void ASpawnVolume::SpawnActor_Implementation(UClass* SpwanClass,const FVector SpawnLocation)
 {
 	if (SpwanClass)
 	{

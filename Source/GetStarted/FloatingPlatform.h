@@ -21,8 +21,14 @@ public:
 	UPROPERTY(VisibleAnywhere, Category="Floating Platform")
 	FVector StartPoint;
 
+	//meta=(MakeEditWidget="true")在世界大纲中可以为改变量创建一个坐标轴，移动改坐标轴不会改变物体的位置，为设计人员提供定位方便
 	UPROPERTY(EditAnywhere, Category = "Floating Platform",meta=(MakeEditWidget="true"))
 	FVector EndPoint;
+
+
+	//物体移动速度
+	UPROPERTY(EditAnywhere, Category = "Floating Platform")
+	float InterpSpeed;
 
 protected:
 	// Called when the game starts or when spawned
