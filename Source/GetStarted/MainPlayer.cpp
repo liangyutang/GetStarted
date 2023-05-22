@@ -55,12 +55,13 @@ AMainPlayer::AMainPlayer()
 	Stamina = MaxStamina;
 	StaminaConsumeRate = 20.0f;
 	ExhaustedStaminaRatio = 0.167f;
+	StaminaStatus = EPlayerStaminaStatus::EPSS_Normal;
 
 	Coins = 0;
 
 	RunningSpeed = 600.0f;
 	SprintingSpeed = 900.0f;
-
+	MovementStatus = EPlayerMovementStatus::EPMS_Normal;
 
 }
 

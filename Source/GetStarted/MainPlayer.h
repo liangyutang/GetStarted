@@ -6,6 +6,22 @@
 #include "GameFramework/Character.h"
 #include "MainPlayer.generated.h"
 
+UENUM(BlueprintType)
+enum class EPlayerMovementStatus :uint8
+{
+	EPMS_Normal UMETA(DisplayName="Normal"),
+	EPMS_Sprinting UMETA(DisplayName = "Sprinting"),
+	EPMS_Dead UMETA(DisplayName = "Dead")
+};
+
+UENUM(BlueprintType)
+enum class EPlayerStaminaStatus :uint8
+{
+	EPSS_Normal UMETA(DisplayName = "Normal"),
+	EPSS_Exhausted UMETA(DisplayName = "Exhausted"),
+	EPSS_ExhaustedRecovering UMETA(DisplayName = "ExhaustedRecovering")
+};
+
 UCLASS()
 class GETSTARTED_API AMainPlayer : public ACharacter
 {
@@ -49,6 +65,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (ClampMin = 0, ClampMax = 1, UIMin = 0, UIMax = 1))
 	float ExhaustedStaminaRatio;
 
+	//耐力状态
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Player Stats")
+	EPlayerStaminaStatus StaminaStatus;
+
 	//当前的硬币值
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
 	int Coins;
@@ -60,6 +80,10 @@ public:
 	//冲刺速度
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
 	float SprintingSpeed;
+
+	//耐力状态
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Player Stats")
+	EPlayerMovementStatus MovementStatus;
 
 protected:
 	// Called when the game starts or when spawned
