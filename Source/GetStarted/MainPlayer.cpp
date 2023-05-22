@@ -45,8 +45,16 @@ AMainPlayer::AMainPlayer()
 	GetCharacterMovement()->AirControl = 0.15f;
 
 	//手柄或键盘上下键视角移动速度
-	BaseRurnRate = 65.0f;
+	BaseTurnRate = 65.0f;
 	BaseLookUpRate = 65.0f;
+
+	MaxHealth = 100.0f;
+	Health = MaxHealth;
+
+	MaxStamina = 150.0f;
+	Stamina = MaxStamina;
+
+	Coins = 0;
 }
 
 // Called when the game starts or when spawned
@@ -156,7 +164,7 @@ void AMainPlayer::LookUp(float Value)
 
 void AMainPlayer::TurnAtRate(float Rate)
 {
-	float Value = Rate * BaseRurnRate * GetWorld()->GetDeltaSeconds();
+	float Value = Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds();
 	if (Value != 0.0f)
 	{
 		AddControllerYawInput(Value);

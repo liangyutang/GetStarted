@@ -21,9 +21,29 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UCameraComponent* FollewCamera;
 
-	float BaseRurnRate;
+	float BaseTurnRate;
 
 	float BaseLookUpRate;
+
+	//最大血量
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Category="Player Stats")
+	float MaxHealth;
+
+	//当前血量
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
+	float Health;
+
+	//最大耐力
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player Stats")
+	float MaxStamina;
+
+	//当前耐力
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
+	float Stamina;
+
+	//当前的硬币值
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
+	int Coins;
 
 protected:
 	// Called when the game starts or when spawned
