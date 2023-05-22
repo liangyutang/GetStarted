@@ -41,9 +41,25 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
 	float Stamina;
 
+	//耐力消耗速率
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
+	float StaminaConsumeRate;
+
+	//耐力消耗速率
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (ClampMin = 0, ClampMax = 1, UIMin = 0, UIMax = 1))
+	float ExhaustedStaminaRatio;
+
 	//当前的硬币值
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
 	int Coins;
+
+	//跑步速度
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player Stats")
+	float RunningSpeed;
+
+	//冲刺速度
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
+	float SprintingSpeed;
 
 protected:
 	// Called when the game starts or when spawned
@@ -74,10 +90,13 @@ public:
 
 	void LookUpAtRate(float Rate);
 
+	UFUNCTION(BlueprintCallable)
 	void IncreaseHealth(float Value);
 
+	UFUNCTION(BlueprintCallable)
 	void IncreaseStamina(float Value);
 
+	UFUNCTION(BlueprintCallable)
 	void IncreaseCoin(float Value);
 
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;

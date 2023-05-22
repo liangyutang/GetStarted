@@ -20,7 +20,7 @@ void APickupItem::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActo
 	if (OtherActor)
 	{
 		//触碰Trigger的物体判断,是否为玩家
-		const AMainPlayer* MainPlayer = Cast<AMainPlayer>(OtherActor);
+		AMainPlayer* MainPlayer = Cast<AMainPlayer>(OtherActor);
 		if (MainPlayer)
 		{
 			//是否播放粒子系统

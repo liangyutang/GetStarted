@@ -21,6 +21,6 @@ public:
 
 	virtual void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32  OtherBodyIndex) override;
 
-	UFUNCTION(BlueprintImplementableEvent,Category="Pickup")
-	void OnPickup(const class AMainPlayer* MainPlayer);
+	UFUNCTION(BlueprintImplementableEvent, Category = "Pickup")
+	void OnPickup(AMainPlayer* MainPlayer);
 };

@@ -53,8 +53,15 @@ AMainPlayer::AMainPlayer()
 
 	MaxStamina = 150.0f;
 	Stamina = MaxStamina;
+	StaminaConsumeRate = 20.0f;
+	ExhaustedStaminaRatio = 0.167f;
 
 	Coins = 0;
+
+	RunningSpeed = 600.0f;
+	SprintingSpeed = 900.0f;
+
+
 }
 
 // Called when the game starts or when spawned
