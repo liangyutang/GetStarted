@@ -194,3 +194,19 @@ void AMainPlayer::LookUpAtRate(float Rate)
 	AddControllerPitchInput(Value);
 }
 
+//增加血量，减血用引擎自带方法来减
+void AMainPlayer::IncreaseHealth(float Value)
+{
+	Health = FMath::Clamp(Health + Value, 0.0f, MaxHealth);
+}
+
+void AMainPlayer::IncreaseStamina(float Value)
+{
+	Stamina = FMath::Clamp(Stamina + Value, 0.0f, MaxStamina);
+}
+
+void AMainPlayer::IncreaseCoin(float Value)
+{
+	Coins += Value;
+}
+
