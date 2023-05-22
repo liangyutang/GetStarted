@@ -89,7 +89,7 @@ void ATriggerableDoor::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AA
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	//触碰Trigger的物体判断,是否为玩家
-	AMainPlayer* MainPlayer = Cast<AMainPlayer>(OtherActor);
+	const AMainPlayer* MainPlayer = Cast<AMainPlayer>(OtherActor);
 	if (MainPlayer)
 	{
 		//if (bIsPlayerOnTrigger)
