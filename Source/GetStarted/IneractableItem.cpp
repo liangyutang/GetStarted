@@ -19,12 +19,19 @@ AIneractableItem::AIneractableItem()
 
 	IdleParticleComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("IdleParticleComponent"));
 	IdleParticleComponent->SetupAttachment(GetRootComponent());
+
+	bNeedRotate = true;
+
+	RotationRate = 45.0f;
 }
 
 // Called when the game starts or when spawned
 void AIneractableItem::BeginPlay()
 {
 	Super::BeginPlay();
+
+	TriggerVolume->OnComponentBeginOverlap.AddDynamic(this, &AIneractableItem::OnOverlapBegin);
+	TriggerVolume->OnComponentEndOverlap.AddDynamic(this, &AIneractableItem::OnOverlapEnd);
 	
 }
 
@@ -33,5 +40,22 @@ void AIneractableItem::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	//ÉèÖÃÐý×ª
+	if (bNeedRotate)
+	{
+		FRotator NewRotation = GetActorRotation();
+		NewRotation.Yaw += RotationRate * DeltaTime;
+		SetActorRotation(NewRotation);
+	}
+}
+
+void AIneractableItem::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+}
+
+void AIneractableItem::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
 }
 
