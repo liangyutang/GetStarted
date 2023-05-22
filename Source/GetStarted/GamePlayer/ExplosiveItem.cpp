@@ -39,6 +39,7 @@ void AExplosiveItem::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AA
 			{
 				UGameplayStatics::PlaySound2D(this, OverlapSound);
 			}
+			UGameplayStatics::ApplyDamage(OtherActor, Damage, nullptr, this, DamageTypeClass);
 			Destroy();
 		}
 	}

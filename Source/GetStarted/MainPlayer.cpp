@@ -210,3 +210,20 @@ void AMainPlayer::IncreaseCoin(float Value)
 	Coins += Value;
 }
 
+float AMainPlayer::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator,
+	AActor* DamageCauser)
+{
+	//¼õÑª
+	if (Health-Damage<=0.0f)
+	{
+		Health = FMath::Clamp(Health - Damage, 0.0f, MaxHealth);
+		//TODO Die();
+	}
+	else
+	{
+		Health -= Damage;
+	}
+
+	return Health;
+}
+
