@@ -61,7 +61,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
 	float StaminaConsumeRate;
 
-	//耐力消耗速率
+	//疲劳期阈值
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (ClampMin = 0, ClampMax = 1, UIMin = 0, UIMax = 1))
 	float ExhaustedStaminaRatio;
 
@@ -130,4 +130,6 @@ public:
 	FORCEINLINE void LeftShiftKeyDown() { bLeftShiftKeyDown = true; };
 
 	FORCEINLINE void LeftShiftKeyUp() { bLeftShiftKeyDown = false; };
+
+	void SetMovementStatus(EPlayerMovementStatus status);
 };

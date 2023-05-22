@@ -79,6 +79,72 @@ void AMainPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	switch (StaminaStatus)
+	{
+	case EPlayerStaminaStatus::EPSS_Normal:
+		if (bLeftShiftKeyDown)
+		{
+			//冲刺键按下
+			if (Stamina-StaminaConsumeRate* DeltaTime<=MaxStamina*ExhaustedStaminaRatio)
+			{
+				//下一帧疲惫状态
+				StaminaStatus = EPlayerStaminaStatus::EPSS_Exhausted;
+				
+			}
+			Stamina -= StaminaConsumeRate * DeltaTime;
+			//当前帧为冲刺状态
+			SetMovementStatus(EPlayerMovementStatus::EPMS_Sprinting);
+			
+		}
+		else
+		{
+			//冲刺键抬起，状态不变
+			Stamina = FMath::Clamp(Stamina + StaminaConsumeRate * DeltaTime, 0.0f, MaxStamina);
+			SetMovementStatus(EPlayerMovementStatus::EPMS_Normal);
+		}
+		break;
+	case EPlayerStaminaStatus::EPSS_ExhaustedRecovering:
+		if (Stamina - StaminaConsumeRate * DeltaTime >= MaxStamina * ExhaustedStaminaRatio)
+		{
+			//恢复后，耐力值不在疲劳区
+			StaminaStatus = EPlayerStaminaStatus::EPSS_Normal;
+		}
+		//恢复耐力
+		Stamina += StaminaConsumeRate * DeltaTime;
+		LeftShiftKeyUp();
+		SetMovementStatus(EPlayerMovementStatus::EPMS_Normal);
+		break;
+	case EPlayerStaminaStatus::EPSS_Exhausted:
+		if (bLeftShiftKeyDown)
+		{
+			//冲刺键按下
+			if (Stamina - StaminaConsumeRate * DeltaTime <= 0.0f)
+			{
+				//没有耐力了
+				StaminaStatus = EPlayerStaminaStatus::EPSS_ExhaustedRecovering;
+				LeftShiftKeyUp();
+				SetMovementStatus(EPlayerMovementStatus::EPMS_Normal);
+			}
+			else
+			{
+				//还有一些耐力
+				Stamina -= StaminaConsumeRate * DeltaTime;
+			}
+
+		}
+		else
+		{
+			//冲刺键抬起
+			StaminaStatus = EPlayerStaminaStatus::EPSS_ExhaustedRecovering;
+			Stamina = FMath::Clamp(Stamina + StaminaConsumeRate * DeltaTime, 0.0f, MaxStamina);
+			SetMovementStatus(EPlayerMovementStatus::EPMS_Normal);
+		}
+		break;
+	default:
+		GetCharacterMovement()->MaxWalkSpeed = RunningSpeed;
+		break;
+	}
+
 }
 
 // Called to bind functionality to input
@@ -239,5 +305,20 @@ float AMainPlayer::TakeDamage(float Damage, FDamageEvent const& DamageEvent, ACo
 	}
 
 	return Health;
+}
+
+void AMainPlayer::SetMovementStatus(EPlayerMovementStatus status)
+{
+	MovementStatus = status;
+	switch (MovementStatus)
+	{
+	case EPlayerMovementStatus::EPMS_Sprinting:
+		GetCharacterMovement()->MaxWalkSpeed = SprintingSpeed;
+		break;
+
+	default:
+		GetCharacterMovement()->MaxWalkSpeed = RunningSpeed;
+		break;
+	}
 }
 

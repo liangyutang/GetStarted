@@ -75,4 +75,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Triggerable Door|Door Switch")
 	void UpdateDoorLocation(FVector Offset);
+
+
 };
