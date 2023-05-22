@@ -62,6 +62,8 @@ AMainPlayer::AMainPlayer()
 	RunningSpeed = 600.0f;
 	SprintingSpeed = 900.0f;
 	MovementStatus = EPlayerMovementStatus::EPMS_Normal;
+	bLeftShiftKeyDown = false;
+
 
 }
 
@@ -89,6 +91,10 @@ void AMainPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	//跳跃
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AMainPlayer::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
+
+	//冲刺
+	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &AMainPlayer::LeftShiftKeyDown);
+	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &AMainPlayer::LeftShiftKeyUp);
 
 	//前进与后退
 	PlayerInputComponent->BindAxis("MoveForward", this, &AMainPlayer::MoveForward);

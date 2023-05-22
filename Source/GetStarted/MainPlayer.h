@@ -85,6 +85,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Player Stats")
 	EPlayerMovementStatus MovementStatus;
 
+	//左shift键是否被按下
+	bool bLeftShiftKeyDown;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -124,4 +126,8 @@ public:
 	void IncreaseCoin(float Value);
 
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+
+	FORCEINLINE void LeftShiftKeyDown() { bLeftShiftKeyDown = true; };
+
+	FORCEINLINE void LeftShiftKeyUp() { bLeftShiftKeyDown = false; };
 };

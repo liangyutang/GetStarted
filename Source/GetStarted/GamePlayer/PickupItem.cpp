@@ -4,11 +4,13 @@
 #include "GamePlayer/PickupItem.h"
 
 #include "MainPlayer.h"
+#include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
 
 APickupItem::APickupItem()
 {
+	TriggerVolume->SetSphereRadius(50.0f);
 }
 
 void APickupItem::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
