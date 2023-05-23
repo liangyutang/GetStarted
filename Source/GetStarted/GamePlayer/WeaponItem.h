@@ -6,6 +6,15 @@
 #include "GamePlayer/IneractableItem.h"
 #include "WeaponItem.generated.h"
 
+UENUM(BlueprintType)
+enum class EWeaponState:uint8
+{
+	//在地上
+	EWS_CanPickup UMETA(DisplayName="CanPickup"),
+	//被玩家使用
+	EWS_Equipped UMETA(DisplayName = "Equipped")
+};
+
 /**
  * 
  */
@@ -26,6 +35,10 @@ public:
 	//Idle粒子效果是否保留
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon|Particle")
 	bool bShouldReserveIdleParticle;
+
+	//武器状态
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Weapon")
+	EWeaponState WeaponState;
 
 protected:
 

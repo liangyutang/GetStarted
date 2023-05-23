@@ -87,6 +87,20 @@ public:
 
 	//左shift键是否被按下
 	bool bLeftShiftKeyDown;
+
+	//是否有武器
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="Weapon")
+	bool bHasWeapon;
+
+	//当前装备的武器
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")
+	class AWeaponItem* EquippedWeapon;
+
+	//正在重叠的武器
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")
+	AWeaponItem* OverlappingWeapon;
+
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
