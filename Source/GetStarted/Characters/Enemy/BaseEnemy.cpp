@@ -7,6 +7,7 @@
 #include "MainPlayer.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values
 ABaseEnemy::ABaseEnemy()
@@ -136,10 +137,21 @@ void ABaseEnemy::MoveToTarget(AMainPlayer* TargetPlayer)
 		//距离敌人多进借书追逐
 		MoveRequest.SetAcceptanceRadius(10.0f);
 
-		//目标的位置
+		//导航路径
 		FNavPathSharedPtr NavPath;
 
 		AIController->MoveTo(MoveRequest, &NavPath);
+
+		//将导航路径渲染出来
+		/*auto PathPoints= NavPath->GetPathPoints();
+
+	    for (auto Point:PathPoints)
+		{
+			FVector Location = Point.Location;
+
+			UKismetSystemLibrary::DrawDebugSphere(this, Location, 25.0f, 8, FLinearColor::Red, 10.0f, 1.5f);
+		}*/
+
 	}
 }
 
