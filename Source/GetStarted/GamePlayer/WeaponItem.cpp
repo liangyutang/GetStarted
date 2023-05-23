@@ -6,6 +6,7 @@
 #include "Components/SphereComponent.h"
 #include "MainPlayer.h"
 #include "Engine/SkeletalMeshSocket.h"
+#include "GameFramework/PawnMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Sound/SoundCue.h"
@@ -111,5 +112,31 @@ void AWeaponItem::Equip(AMainPlayer* MainPlayer)
 
 void AWeaponItem::UnEquip(AMainPlayer* MainPlayer)
 {
+	//卸载武器判断，不能在其他动作中卸载武器（奔跑除外）
+	//跳跃时不可卸载武器
+	if (MainPlayer&&!MainPlayer->GetMovementComponent()->IsFalling())
+	{
+		WeaponState = EWeaponState::EWS_CanPickup;
+
+		//对MainPlayer做维护
+		MainPlayer->bHasWeapon = false;
+		MainPlayer->EquippedWeapon = nullptr;
+		//判断角色周围是否还有其他武器
+		if (MainPlayer->OverlappingWeapon==nullptr)
+		{
+			MainPlayer->OverlappingWeapon = this;
+		}
+
+		//脱离socket
+		DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+
+		//设置武器朝向与大小
+		SetActorRotation(FRotator(0.0f));
+		SetActorScale3D(FVector(1.0f));
+
+		//旋转与粒子效果
+		bNeedRotate = true;
+		IdleParticleComponent->Activate();
+	}
 }
 
