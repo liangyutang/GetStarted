@@ -361,13 +361,46 @@ void AMainPlayer::InteractKeyDown()
 
 void AMainPlayer::AttackKeyDown()
 {
+	bAttackKeyDown = true;
+	if (bHasWeapon)
+	{
+		//有武器，攻击，是否在攻击间隔外，在Attack()中判断
+		Attack();
+	}
 }
 
 void AMainPlayer::Attack()
 {
+	if (!bIsAttacking)
+	{
+		//当前没有在攻击
+		bIsAttacking = true;
+
+		//获取动画实例
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		if (AnimInstance)
+		{
+			//获取随机播放速率
+			const float PlayRate = FMath::RandRange(1.25f, 1.75f);
+			//获取随机section
+			const FString SectionName = FString::FromInt(FMath::RandRange(1, 2));
+
+			//用那种速率播放那个蒙太奇
+			AnimInstance->Montage_Play(AttackMontage,PlayRate);
+			//播放蒙太奇的那个section
+			AnimInstance->Montage_JumpToSection(FName(*SectionName),AttackMontage);
+		}
+	}
 }
 
 void AMainPlayer::AttackEnd()
 {
+	bIsAttacking = false;
+
+	//攻击键仍然被按着
+	if (bAttackKeyDown)
+	{
+		AttackKeyDown();
+	}
 }
 
