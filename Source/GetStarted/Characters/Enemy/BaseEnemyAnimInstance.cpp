@@ -29,5 +29,8 @@ void UBaseEnemyAnimInstance::UpdateAnimationProperties()
 
 		//为Speed赋值
 		Speed = PlanarSpeed.Size();
+
+		//如果的BlendSpace,需要获取角色朝向
+		//float Direction = CalculateDirection(EnemyRef->GetVelocity(), EnemyRef->GetActorRotation());
 	}
 }
