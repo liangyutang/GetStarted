@@ -190,7 +190,11 @@ void AMainPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 void AMainPlayer::Jump()
 {
-	Super::Jump();
+	//攻击时，不允许跳跃
+	if (!bIsAttacking)
+	{
+		Super::Jump();
+	}
 }
 
 void AMainPlayer::MoveForward(float Value)
@@ -198,7 +202,8 @@ void AMainPlayer::MoveForward(float Value)
 	//移动1
 	//AddMovementInput(GetActorForwardVector(), Value);
 
-	if ((Controller != nullptr) && (Value != 0.0f))
+	//攻击时不可移动
+	if ((Controller != nullptr) && (Value != 0.0f)&&(!bIsAttacking))
 	{
 		//获取摄像机的角度
 		FRotator Rotator = Controller->GetControlRotation();
@@ -218,7 +223,9 @@ void AMainPlayer::MoveRight(float Value)
 	//移动1
 	//AddMovementInput(GetActorRightVector(), Value);
 
-	if ((Controller != nullptr) && (Value != 0.0f))
+
+	//攻击时不可移动
+	if ((Controller != nullptr) && (Value != 0.0f)&&(!bIsAttacking))
 	{
 		FRotator Rotator = Controller->GetControlRotation();
 		FRotator YawRotator(0.0f, Rotator.Yaw, 0.0f);
@@ -374,7 +381,8 @@ void AMainPlayer::AttackKeyDown()
 
 void AMainPlayer::Attack()
 {
-	if (!bIsAttacking)
+	//在空中或者攻击时，不会调用
+	if (!bIsAttacking && !(GetMovementComponent()->IsFalling()))
 	{
 		//当前没有在攻击
 		bIsAttacking = true;
