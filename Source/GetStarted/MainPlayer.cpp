@@ -7,6 +7,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GamePlayer/WeaponItem.h"
 
 // Sets default values
 AMainPlayer::AMainPlayer()
@@ -157,6 +158,9 @@ void AMainPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	//跳跃
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AMainPlayer::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
+
+	//F键
+	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AMainPlayer::InteractKeyDown);
 
 	//冲刺
 	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &AMainPlayer::LeftShiftKeyDown);
@@ -319,6 +323,35 @@ void AMainPlayer::SetMovementStatus(EPlayerMovementStatus status)
 	default:
 		GetCharacterMovement()->MaxWalkSpeed = RunningSpeed;
 		break;
+	}
+}
+
+void AMainPlayer::InteractKeyDown()
+{
+	//是否有武器在范围内
+	if (OverlappingWeapon)
+	{
+		//范围内有武器,手中是否有武器
+		if (EquippedWeapon)
+		{
+			//手中有武器
+			EquippedWeapon->UnEquip(this);
+			OverlappingWeapon->Equip(this);
+		}
+		else
+		{
+			//手中没武器，装备武器
+			OverlappingWeapon->Equip(this);
+		}
+		
+	}
+	else
+	{
+		//范围内没有武器，这里扔掉手中的武器(手中没有武器，则不做任何操作)
+		if (EquippedWeapon)
+		{
+			EquippedWeapon->UnEquip(this);
+		}
 	}
 }
 

@@ -60,10 +60,11 @@ void AWeaponItem::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor*
 	}
 }
 
-void AWeaponItem::Equip()
+void AWeaponItem::Equip(AMainPlayer* MainPlayer)
 {
 }
 
-void AWeaponItem::UnEquip()
+void AWeaponItem::UnEquip(AMainPlayer* MainPlayer)
 {
 }
+
