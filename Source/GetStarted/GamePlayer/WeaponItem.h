@@ -55,4 +55,10 @@ public:
 
 	//Ğ¶ÏÂÎäÆ÷
 	void UnEquip(AMainPlayer* MainPlayer);
+
+	//¼¤»îÅö×²
+	void ActiveDisplayMeshCollision();
+
+	//¹Ø±ÕÅö×²
+	void DeactiveDisplayMeshCollision();
 };

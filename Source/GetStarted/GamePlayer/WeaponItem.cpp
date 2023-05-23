@@ -20,6 +20,8 @@ AWeaponItem::AWeaponItem()
 	//替换父类的组件,一定要在TEXT中重命名，防止引擎崩溃
 	DisplayMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("DisplaySkeletalMesh"));
 	DisplayMesh->SetupAttachment(GetRootComponent());
+	//激活碰撞
+	ActiveDisplayMeshCollision();
 
 	//硬编码加载音效
 	static  ConstructorHelpers::FObjectFinder<USoundCue> SoundCueAsset(TEXT("SoundCue'/Game/Assets/Audios/Blade_Cue.Blade_Cue'"));
@@ -33,6 +35,7 @@ AWeaponItem::AWeaponItem()
 	bShouldReserveIdleParticle = false;
 
 	WeaponState = EWeaponState::EWS_CanPickup;
+
 }
 
 void AWeaponItem::BeginPlay()
@@ -81,6 +84,9 @@ void AWeaponItem::Equip(AMainPlayer* MainPlayer)
 		//修改武器状态
 		WeaponState = EWeaponState::EWS_Equipped;
 
+		//关闭碰撞
+		DeactiveDisplayMeshCollision();
+
 		//获取Socket
 		const USkeletalMeshSocket* RightHandSocket = MainPlayer->GetMesh()->GetSocketByName("RightHandSocket");
 		if (RightHandSocket)
@@ -118,6 +124,9 @@ void AWeaponItem::UnEquip(AMainPlayer* MainPlayer)
 	{
 		WeaponState = EWeaponState::EWS_CanPickup;
 
+		//激活碰撞
+		ActiveDisplayMeshCollision();
+
 		//对MainPlayer做维护
 		MainPlayer->bHasWeapon = false;
 		MainPlayer->EquippedWeapon = nullptr;
@@ -140,3 +149,21 @@ void AWeaponItem::UnEquip(AMainPlayer* MainPlayer)
 	}
 }
 
+void AWeaponItem::ActiveDisplayMeshCollision()
+{
+	//设置触发器的碰撞检测
+	//设置体积的状态-查询与物理
+	DisplayMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	//指定当前的碰撞类型
+	DisplayMesh->SetCollisionObjectType(ECC_WorldStatic);
+	//只响应pawn，其他不响应
+	DisplayMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
+	DisplayMesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+}
+
+void AWeaponItem::DeactiveDisplayMeshCollision()
+{
+	//设置触发器的碰撞检测
+	//设置体积的状态-无碰撞
+	DisplayMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
