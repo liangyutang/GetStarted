@@ -2,6 +2,8 @@
 
 
 #include "Characters/Enemy/BaseEnemy.h"
+
+#include "AIController.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
 
@@ -23,7 +25,12 @@ ABaseEnemy::ABaseEnemy()
 	AttackVolume = CreateDefaultSubobject<USphereComponent>(TEXT("AttackVolume"));
 	AttackVolume->SetupAttachment(GetRootComponent());
 	AttackVolume->InitSphereRadius(100.0f);
-	
+
+	//设置AI
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+	//设置AI状态为游走状态
+	EnemyMovementStatus = EEnemyMovementStatus::EEMS_Idle;
+
 }
 
 // Called when the game starts or when spawned
@@ -54,6 +61,8 @@ void ABaseEnemy::BeginPlay()
 	AttackVolume->OnComponentBeginOverlap.AddDynamic(this, &ABaseEnemy::OnAttackVolumeOverlapBegin);
 	//当重叠事件结束时
 	AttackVolume->OnComponentEndOverlap.AddDynamic(this, &ABaseEnemy::OnAttackVolumeOverlapEnd);
+
+	AIController = Cast<AAIController>(GetController());
 	
 }
 
