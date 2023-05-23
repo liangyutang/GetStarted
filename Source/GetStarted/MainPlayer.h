@@ -100,6 +100,16 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")
 	AWeaponItem* OverlappingWeapon;
 
+	//攻击键是否被按下
+	bool bAttackKeyDown;
+
+	//是否在攻击
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Animation")
+	bool bIsAttack;
+
+	//动画蒙太奇的引用（只能编辑默认值）
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Animation")
+	UAnimMontage* AttackMontage;
 
 protected:
 	// Called when the game starts or when spawned
@@ -148,4 +158,14 @@ public:
 	void SetMovementStatus(EPlayerMovementStatus status);
 
 	void InteractKeyDown();
+
+	void AttackKeyDown();
+
+	//攻击键抬起
+	FORCEINLINE void AttackKeyUp() { bAttackKeyDown = false; };
+
+	void Attack();
+
+	UFUNCTION(BlueprintCallable)
+	void AttackEnd();
 };

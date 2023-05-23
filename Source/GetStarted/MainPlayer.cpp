@@ -166,6 +166,10 @@ void AMainPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &AMainPlayer::LeftShiftKeyDown);
 	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &AMainPlayer::LeftShiftKeyUp);
 
+	//攻击
+	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &AMainPlayer::AttackKeyDown);
+	PlayerInputComponent->BindAction("Attack", IE_Released, this, &AMainPlayer::AttackKeyUp);
+
 	//前进与后退
 	PlayerInputComponent->BindAxis("MoveForward", this, &AMainPlayer::MoveForward);
 	//左右
@@ -353,5 +357,17 @@ void AMainPlayer::InteractKeyDown()
 			EquippedWeapon->UnEquip(this);
 		}
 	}
+}
+
+void AMainPlayer::AttackKeyDown()
+{
+}
+
+void AMainPlayer::Attack()
+{
+}
+
+void AMainPlayer::AttackEnd()
+{
 }
 
