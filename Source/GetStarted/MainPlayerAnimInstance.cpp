@@ -23,9 +23,9 @@ void UMainPlayerAnimInstance::UpdateAnimationProperties()
 	if (PlayerRef)
 	{
 		//获取角色的速度
-		FVector SpeedVector = PlayerRef->GetVelocity();
+		const FVector SpeedVector = PlayerRef->GetVelocity();
 		//只要平面的速度，不要Z轴的速度
-		FVector PlanarSpeed = FVector(SpeedVector.X, SpeedVector.Y, 0.0f);
+		const FVector PlanarSpeed = FVector(SpeedVector.X, SpeedVector.Y, 0.0f);
 
 		//为Speed赋值
 		Speed = PlanarSpeed.Size();
