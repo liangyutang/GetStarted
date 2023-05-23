@@ -4,6 +4,7 @@
 #include "Characters/Enemy/BaseEnemy.h"
 
 #include "AIController.h"
+#include "MainPlayer.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
 
@@ -82,10 +83,34 @@ void ABaseEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 
 void ABaseEnemy::OnChaseVolumeOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (OtherActor)
+	{
+		AMainPlayer* MainPlayer = Cast<AMainPlayer>(OtherActor);
+		if (MainPlayer)
+		{
+			//追逐玩家
+			MoveToTarget(MainPlayer);
+		}
+	}
 }
 
 void ABaseEnemy::OnChaseVolumeOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
+	if (OtherActor)
+	{
+		AMainPlayer* MainPlayer = Cast<AMainPlayer>(OtherActor);
+		if (MainPlayer)
+		{
+			/**停止追逐*/
+			EnemyMovementStatus = EEnemyMovementStatus::EEMS_Idle;
+
+			if (AIController)
+			{
+				//停止移动
+				AIController->StopMovement();
+			}
+		}
+	}
 }
 
 void ABaseEnemy::OnAttackVolumeOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -99,5 +124,22 @@ void ABaseEnemy::OnAttackVolumeOverlapEnd(UPrimitiveComponent* OverlappedCompone
 
 void ABaseEnemy::MoveToTarget(AMainPlayer* TargetPlayer)
 {
+	//设置为追逐状态
+	EnemyMovementStatus = EEnemyMovementStatus::EEMS_MoveToTarget;
+
+	if (AIController)
+	{
+		//准备参数
+		FAIMoveRequest MoveRequest;
+		//设置追逐目标
+		MoveRequest.SetGoalActor(TargetPlayer);
+		//距离敌人多进借书追逐
+		MoveRequest.SetAcceptanceRadius(10.0f);
+
+		//目标的位置
+		FNavPathSharedPtr NavPath;
+
+		AIController->MoveTo(MoveRequest, &NavPath);
+	}
 }
 
