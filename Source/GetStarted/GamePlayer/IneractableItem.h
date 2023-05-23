@@ -19,9 +19,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	class USphereComponent* TriggerVolume;
 
-	//显示模型
+	//显示模型,之前为UStaticMeshComponent，为方便创建武器使用，改为UMeshComponent（UMeshComponent为UStaticMeshComponent的父类）
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	class UStaticMeshComponent* DisplayMesh;
+	class UMeshComponent* DisplayMesh;
 
 	//如果带Component，则需要在cpp文件中创建改组件（CreateDefaultSubobject），若不带Component，则可看为资源文件，有虚幻引擎统一管理
 	//Component一般不分类（Category）
