@@ -6,6 +6,16 @@
 #include "GameFramework/Character.h"
 #include "BaseEnemy.generated.h"
 
+UENUM(BlueprintType)
+enum class EEnemyMovementStatus :uint8
+{
+	EEMS_Idle UMETA(DisplayName = "Idle"),
+	EEMS_MoveToTarget UMETA(DisplayName = "MoveToTarget"),
+	EEMS_Attacking UMETA(DisplayName = "Attacking"),
+	EEMS_Dead UMETA(DisplayName = "Dead")
+};
+
+
 UCLASS()
 class GETSTARTED_API ABaseEnemy : public ACharacter
 {
@@ -22,6 +32,10 @@ public:
 	//攻击范围
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
 	USphereComponent* AttackVolume;
+
+	//怪物状态
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Enemy Status")
+	EEnemyMovementStatus EnemyMovementStatus;
 
 protected:
 	// Called when the game starts or when spawned
@@ -46,4 +60,9 @@ public:
 	UFUNCTION()
 	virtual void OnAttackVolumeOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32  OtherBodyIndex);
 
+	/**
+	 * @brief 移动到目标
+	 * @param TargetPlayer 玩家
+	 */
+	void MoveToTarget(class AMainPlayer* TargetPlayer);
 };

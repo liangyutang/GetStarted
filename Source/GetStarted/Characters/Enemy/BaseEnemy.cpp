@@ -2,7 +2,6 @@
 
 
 #include "Characters/Enemy/BaseEnemy.h"
-
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
 
@@ -86,6 +85,10 @@ void ABaseEnemy::OnAttackVolumeOverlapBegin(UPrimitiveComponent* OverlappedCompo
 
 void ABaseEnemy::OnAttackVolumeOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+}
+
+void ABaseEnemy::MoveToTarget(AMainPlayer* TargetPlayer)
 {
 }
 
