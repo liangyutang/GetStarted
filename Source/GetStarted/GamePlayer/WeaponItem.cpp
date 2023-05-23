@@ -119,8 +119,10 @@ void AWeaponItem::Equip(AMainPlayer* MainPlayer)
 void AWeaponItem::UnEquip(AMainPlayer* MainPlayer)
 {
 	//Ð¶ÔØÎäÆ÷ÅÐ¶Ï£¬²»ÄÜÔÚÆäËû¶¯×÷ÖÐÐ¶ÔØÎäÆ÷£¨±¼ÅÜ³ýÍâ£©
-	//ÌøÔ¾Ê±²»¿ÉÐ¶ÔØÎäÆ÷
-	if (MainPlayer&&!MainPlayer->GetMovementComponent()->IsFalling())
+	//ÌøÔ¾Ê±²»¿ÉÐ¶ÔØÎäÆ÷,¹¥»÷Ê±²»¿ÉÐ¶ÔØÎäÆ÷
+	if (MainPlayer
+		&& !(MainPlayer->GetMovementComponent()->IsFalling())
+		&& !(MainPlayer->bIsAttacking))
 	{
 		WeaponState = EWeaponState::EWS_CanPickup;
 

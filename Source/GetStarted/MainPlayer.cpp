@@ -65,6 +65,8 @@ AMainPlayer::AMainPlayer()
 	MovementStatus = EPlayerMovementStatus::EPMS_Normal;
 	bLeftShiftKeyDown = false;
 
+	bAttackKeyDown = false;
+	bIsAttacking = false;
 
 }
 
@@ -362,6 +364,7 @@ void AMainPlayer::InteractKeyDown()
 void AMainPlayer::AttackKeyDown()
 {
 	bAttackKeyDown = true;
+
 	if (bHasWeapon)
 	{
 		//有武器，攻击，是否在攻击间隔外，在Attack()中判断
