@@ -3,6 +3,8 @@
 
 #include "GamePlayer/WeaponItem.h"
 
+#include "Components/SphereComponent.h"
+
 AWeaponItem::AWeaponItem()
 {
 
@@ -11,4 +13,6 @@ AWeaponItem::AWeaponItem()
 	//替换父类的组件,一定要在TEXT中重命名，防止引擎崩溃
 	DisplayMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("DisplaySkeletalMesh"));
 	DisplayMesh->SetupAttachment(GetRootComponent());
+
+	TriggerVolume->SetSphereRadius(64.0f);
 }
