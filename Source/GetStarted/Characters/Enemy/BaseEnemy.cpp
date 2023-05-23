@@ -33,6 +33,8 @@ ABaseEnemy::ABaseEnemy()
 	//设置AI状态为游走状态
 	EnemyMovementStatus = EEnemyMovementStatus::EEMS_Idle;
 
+	bAttackVolumeOverlapping = false;
+
 }
 
 // Called when the game starts or when spawned
@@ -86,7 +88,7 @@ void ABaseEnemy::OnChaseVolumeOverlapBegin(UPrimitiveComponent* OverlappedCompon
 {
 	if (OtherActor)
 	{
-		AMainPlayer* MainPlayer = Cast<AMainPlayer>(OtherActor);
+		const AMainPlayer* MainPlayer = Cast<AMainPlayer>(OtherActor);
 		if (MainPlayer)
 		{
 			//追逐玩家
@@ -99,7 +101,7 @@ void ABaseEnemy::OnChaseVolumeOverlapEnd(UPrimitiveComponent* OverlappedComponen
 {
 	if (OtherActor)
 	{
-		AMainPlayer* MainPlayer = Cast<AMainPlayer>(OtherActor);
+		const AMainPlayer* MainPlayer = Cast<AMainPlayer>(OtherActor);
 		if (MainPlayer)
 		{
 			/**停止追逐*/
@@ -116,14 +118,36 @@ void ABaseEnemy::OnChaseVolumeOverlapEnd(UPrimitiveComponent* OverlappedComponen
 
 void ABaseEnemy::OnAttackVolumeOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (OtherActor)
+	{
+		const AMainPlayer* MainPlayer = Cast<AMainPlayer>(OtherActor);
+		if (MainPlayer)
+		{
+			bAttackVolumeOverlapping = true;
+			Attack();
+		}
+	}
 }
 
 void ABaseEnemy::OnAttackVolumeOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
+	if (OtherActor)
+	{
+		const AMainPlayer* MainPlayer = Cast<AMainPlayer>(OtherActor);
+		if (MainPlayer)
+		{
+			bAttackVolumeOverlapping = false;
+			//是否攻击完成
+			if (EnemyMovementStatus!=EEnemyMovementStatus::EEMS_Attacking)
+			{
+				MoveToTarget(MainPlayer);
+			}
+		}
+	}
 }
 
-void ABaseEnemy::MoveToTarget(AMainPlayer* TargetPlayer)
+void ABaseEnemy::MoveToTarget(const AMainPlayer* TargetPlayer)
 {
 	//设置为追逐状态
 	EnemyMovementStatus = EEnemyMovementStatus::EEMS_MoveToTarget;
@@ -152,6 +176,44 @@ void ABaseEnemy::MoveToTarget(AMainPlayer* TargetPlayer)
 			UKismetSystemLibrary::DrawDebugSphere(this, Location, 25.0f, 8, FLinearColor::Red, 10.0f, 1.5f);
 		}*/
 
+	}
+}
+
+void ABaseEnemy::Attack()
+{
+	if (AIController)
+	{
+		AIController->StopMovement();
+	}
+	//看现在是否在攻击
+	if (EnemyMovementStatus!=EEnemyMovementStatus::EEMS_Attacking)
+	{
+		EnemyMovementStatus = EEnemyMovementStatus::EEMS_Attacking;
+
+		//获取动画实例
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		if (AnimInstance)
+		{
+			//获取随机播放速率
+			const float PlayRate = FMath::RandRange(0.9f, 1.1f);
+			//获取随机section
+			const FString SectionName = FString::FromInt(FMath::RandRange(1, 3));
+
+			//用那种速率播放那个蒙太奇
+			AnimInstance->Montage_Play(AttackMontage, PlayRate);
+			//播放蒙太奇的那个section
+			AnimInstance->Montage_JumpToSection(FName(*SectionName), AttackMontage);
+		}
+	}
+}
+
+void ABaseEnemy::AttackEnd()
+{
+	EnemyMovementStatus = EEnemyMovementStatus::EEMS_Idle;
+
+	if (bAttackVolumeOverlapping)
+	{
+		Attack();
 	}
 }
 

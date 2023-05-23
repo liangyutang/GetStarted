@@ -41,6 +41,14 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Enemy Status")
 	EEnemyMovementStatus EnemyMovementStatus;
 
+	//是否在攻击
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Attack")
+	bool bAttackVolumeOverlapping;
+
+	//动画蒙太奇的引用（只能编辑默认值）在蓝图在使用改变量
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack")
+	UAnimMontage* AttackMontage;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -68,5 +76,11 @@ public:
 	 * @brief 移动到目标
 	 * @param TargetPlayer 玩家
 	 */
-	void MoveToTarget(class AMainPlayer* TargetPlayer);
+	UFUNCTION(BlueprintCallable)
+	void MoveToTarget(const class AMainPlayer* TargetPlayer);
+
+	void Attack();
+
+	UFUNCTION(BlueprintCallable)
+	void AttackEnd();
 };

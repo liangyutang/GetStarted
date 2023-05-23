@@ -107,7 +107,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Animation")
 	bool bIsAttacking;
 
-	//动画蒙太奇的引用（只能编辑默认值）
+	//动画蒙太奇的引用（只能编辑默认值）在蓝图在使用改变量
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Animation")
 	UAnimMontage* AttackMontage;
 
