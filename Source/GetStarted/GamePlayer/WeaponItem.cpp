@@ -5,6 +5,11 @@
 
 #include "Components/SphereComponent.h"
 #include "MainPlayer.h"
+#include "Engine/SkeletalMeshSocket.h"
+#include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystemComponent.h"
+#include "Sound/SoundCue.h"
+#include "UObject/ConstructorHelpers.h"
 
 AWeaponItem::AWeaponItem()
 {
@@ -15,6 +20,13 @@ AWeaponItem::AWeaponItem()
 	DisplayMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("DisplaySkeletalMesh"));
 	DisplayMesh->SetupAttachment(GetRootComponent());
 
+	//硬编码加载音效
+	static  ConstructorHelpers::FObjectFinder<USoundCue> SoundCueAsset(TEXT("SoundCue'/Game/Assets/Audios/Blade_Cue.Blade_Cue'"));
+	if (SoundCueAsset.Succeeded())
+	{
+		OnEquippedSound = SoundCueAsset.Object;
+	}
+
 	TriggerVolume->SetSphereRadius(64.0f);
 
 	bShouldReserveIdleParticle = false;
@@ -24,6 +36,7 @@ AWeaponItem::AWeaponItem()
 
 void AWeaponItem::BeginPlay()
 {
+	Super::BeginPlay();
 }
 
 void AWeaponItem::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -62,6 +75,38 @@ void AWeaponItem::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor*
 
 void AWeaponItem::Equip(AMainPlayer* MainPlayer)
 {
+	if (MainPlayer)
+	{
+		//修改武器状态
+		WeaponState = EWeaponState::EWS_Equipped;
+
+		//获取Socket
+		const USkeletalMeshSocket* RightHandSocket = MainPlayer->GetMesh()->GetSocketByName("RightHandSocket");
+		if (RightHandSocket)
+		{
+			//武器附着在socket上
+			RightHandSocket->AttachActor(this, MainPlayer->GetMesh());
+
+			//对MainPlayer做维护
+			MainPlayer->bHasWeapon = true;
+			MainPlayer->EquippedWeapon = this;
+			MainPlayer->OverlappingWeapon = nullptr;
+
+			//关闭旋转
+			bNeedRotate = false;
+			//播放音效
+			if (OnEquippedSound)
+			{
+				UGameplayStatics::PlaySound2D(this, OnEquippedSound);
+			}
+			//是否保留粒子效果
+			if (!bShouldReserveIdleParticle)
+			{
+				//不保留
+				IdleParticleComponent->Deactivate();
+			}
+		}
+	}
 }
 
 void AWeaponItem::UnEquip(AMainPlayer* MainPlayer)
