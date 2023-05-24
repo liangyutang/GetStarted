@@ -115,8 +115,17 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attack")
 	class ABaseEnemy* AttackTarget;
 
+	//目标过滤器
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category ="Attack")
 	TSubclassOf<ABaseEnemy> EnemyFilter;
+
+	//插值速度
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Attack")
+	float InterpSpeed;
+
+	//是否进行插值,在攻击时为false;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Attack")
+	bool bInterpToEnemy;
 
 protected:
 	// Called when the game starts or when spawned

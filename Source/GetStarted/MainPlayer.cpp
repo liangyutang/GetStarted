@@ -9,6 +9,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GamePlayer/WeaponItem.h"
 #include "GetStarted/Characters/Enemy/BaseEnemy.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 AMainPlayer::AMainPlayer()
@@ -70,6 +71,8 @@ AMainPlayer::AMainPlayer()
 	bIsAttacking = false;
 
 	AttackTarget = nullptr;
+	InterpSpeed = 15.0f;
+	bInterpToEnemy = false;
 }
 
 // Called when the game starts or when spawned
@@ -148,6 +151,16 @@ void AMainPlayer::Tick(float DeltaTime)
 	default:
 		GetCharacterMovement()->MaxWalkSpeed = RunningSpeed;
 		break;
+	}
+
+	//不在攻击状态下，且敌人不为空
+	if (bInterpToEnemy && AttackTarget)
+	{
+		//获得玩家对敌人的	朝向
+		const FRotator LookAtYaw(0.0f, UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), AttackTarget->GetActorLocation()).Yaw,0.0f);
+		//面向敌人
+		const FRotator InterpRotation=FMath::RInterpTo(GetActorRotation(),LookAtYaw,DeltaTime,InterpSpeed);
+		SetActorRotation(InterpRotation);
 	}
 
 }
@@ -388,6 +401,7 @@ void AMainPlayer::Attack()
 	{
 		//当前没有在攻击
 		bIsAttacking = true;
+		bInterpToEnemy = true;
 
 		//获取动画实例
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
@@ -409,6 +423,7 @@ void AMainPlayer::Attack()
 void AMainPlayer::AttackEnd()
 {
 	bIsAttacking = false;
+	bInterpToEnemy = false;
 
 	//攻击键仍然被按着
 	if (bAttackKeyDown)
