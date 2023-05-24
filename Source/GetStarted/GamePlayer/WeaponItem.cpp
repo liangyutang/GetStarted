@@ -27,7 +27,7 @@ AWeaponItem::AWeaponItem()
 	AttackCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("AttackCollision"));
 	//附着socket
 	AttackCollision->SetupAttachment(DisplayMesh,"WeaponSocket");
-	DeactiveAttackCollisionCollision();
+	DeactiveAttackCollision();
 
 	//硬编码加载音效
 	static  ConstructorHelpers::FObjectFinder<USoundCue> SoundCueAsset(TEXT("SoundCue'/Game/Assets/Audios/Blade_Cue.Blade_Cue'"));
@@ -189,7 +189,7 @@ void AWeaponItem::OnAttackCollisionOverlapEnd(UPrimitiveComponent* OverlappedCom
 {
 }
 
-void AWeaponItem::ActiveAttackCollisionCollision()
+void AWeaponItem::ActiveAttackCollision()
 {
 	//设置触发器的碰撞检测
 	//设置体积的状态-查询与物理
@@ -201,7 +201,7 @@ void AWeaponItem::ActiveAttackCollisionCollision()
 	AttackCollision->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 }
 
-void AWeaponItem::DeactiveAttackCollisionCollision()
+void AWeaponItem::DeactiveAttackCollision()
 {
 	//设置触发器的碰撞检测
 	//设置体积的状态-无碰撞

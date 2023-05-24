@@ -47,7 +47,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon|Attack")
 	float Damage;
 
-	//在蓝图中指定
+	//在蓝图中指定,伤害类型
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon|Attack")
 	TSubclassOf<UDamageType> DamageTypeClass;
 
@@ -85,9 +85,9 @@ public:
 
 	//激活AttackCollision碰撞
 	UFUNCTION(BlueprintCallable)
-	void ActiveAttackCollisionCollision();
+	void ActiveAttackCollision();
 
 	//关闭AttackCollision碰撞
 	UFUNCTION(BlueprintCallable)
-	void DeactiveAttackCollisionCollision();
+	void DeactiveAttackCollision();
 };

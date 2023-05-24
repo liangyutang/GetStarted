@@ -7,6 +7,7 @@
 #include "MainPlayer.h"
 #include "ProgressBar.h"
 #include "WidgetComponent.h"
+#include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -51,6 +52,13 @@ ABaseEnemy::ABaseEnemy()
 	//大小
 	HealthBarWidgetComponent->SetDrawSize(FVector2D(125.0f, 10.0f));
 
+	LeftAttackCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("LeftAttackCollision"));
+	LeftAttackCollision->SetupAttachment(GetMesh(),FName("LeftAttackCollision"));
+	DeactiveLeftAttackCollision();
+
+	RightAttackCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("RightAttackCollision"));
+	RightAttackCollision->SetupAttachment(GetMesh(), "RightAttackCollision");
+	DeactiveRightAttackCollision();
 
 	//设置AI
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
@@ -63,6 +71,8 @@ ABaseEnemy::ABaseEnemy()
 	bAttackVolumeOverlapping = false;
 	InterpSpeed = 15.0f;
 	bInterpToPlayer = false;
+
+	Damage = 10;
 }
 
 // Called when the game starts or when spawned
@@ -93,6 +103,16 @@ void ABaseEnemy::BeginPlay()
 	AttackVolume->OnComponentBeginOverlap.AddDynamic(this, &ABaseEnemy::OnAttackVolumeOverlapBegin);
 	//当重叠事件结束时
 	AttackVolume->OnComponentEndOverlap.AddDynamic(this, &ABaseEnemy::OnAttackVolumeOverlapEnd);
+
+	//当区域开始被重叠时
+	LeftAttackCollision->OnComponentBeginOverlap.AddDynamic(this, &ABaseEnemy::OnLeftAttackCollisionOverlapBegin);
+	//当重叠事件结束时
+	LeftAttackCollision->OnComponentEndOverlap.AddDynamic(this, &ABaseEnemy::OnLeftAttackCollisionOverlapEnd);
+
+	//当区域开始被重叠时
+	RightAttackCollision->OnComponentBeginOverlap.AddDynamic(this, &ABaseEnemy::OnRightAttackCollisionOverlapBegin);
+	//当重叠事件结束时
+	RightAttackCollision->OnComponentEndOverlap.AddDynamic(this, &ABaseEnemy::OnRightAttackCollisionOverlapEnd);
 
 	//获取血量条对应的组件
 	HealthBar= Cast<UProgressBar>(HealthBarWidgetComponent->GetUserWidgetObject()->GetWidgetFromName("HealthBar"));
@@ -197,6 +217,60 @@ void ABaseEnemy::OnAttackVolumeOverlapEnd(UPrimitiveComponent* OverlappedCompone
 			}
 		}
 	}
+}
+
+void ABaseEnemy::OnLeftAttackCollisionOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+}
+
+void ABaseEnemy::OnLeftAttackCollisionOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+}
+
+void ABaseEnemy::OnRightAttackCollisionOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+}
+
+void ABaseEnemy::OnRightAttackCollisionOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+}
+
+void ABaseEnemy::ActiveLeftAttackCollision()
+{
+	//设置触发器的碰撞检测
+	//设置体积的状态-查询与物理
+	LeftAttackCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	//指定当前的碰撞类型
+	LeftAttackCollision->SetCollisionObjectType(ECC_WorldDynamic);
+	//只响应pawn，其他不响应
+	LeftAttackCollision->SetCollisionResponseToAllChannels(ECR_Ignore);
+	LeftAttackCollision->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+}
+
+void ABaseEnemy::DeactiveLeftAttackCollision()
+{
+	//设置触发器的碰撞检测
+	//设置体积的状态-无碰撞
+	LeftAttackCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+void ABaseEnemy::ActiveRightAttackCollision()
+{
+	//设置触发器的碰撞检测
+	//设置体积的状态-查询与物理
+	RightAttackCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	//指定当前的碰撞类型
+	RightAttackCollision->SetCollisionObjectType(ECC_WorldDynamic);
+	//只响应pawn，其他不响应
+	RightAttackCollision->SetCollisionResponseToAllChannels(ECR_Ignore);
+	RightAttackCollision->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+}
+
+void ABaseEnemy::DeactiveRightAttackCollision()
+{
+	//设置触发器的碰撞检测
+	//设置体积的状态-无碰撞
+	RightAttackCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void ABaseEnemy::MoveToTarget(const AMainPlayer* TargetPlayer)

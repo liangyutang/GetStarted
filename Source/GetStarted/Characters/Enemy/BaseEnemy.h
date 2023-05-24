@@ -37,22 +37,6 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
 	class AAIController* AIController;
 
-	//是否在攻击
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Attack")
-	bool bAttackVolumeOverlapping;
-
-	//动画蒙太奇的引用（只能编辑默认值）在蓝图在使用改变量
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack")
-	UAnimMontage* AttackMontage;
-
-	//插值速度
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
-	float InterpSpeed;
-
-	//是否进行插值,在攻击时为false;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Attack")
-	bool bInterpToPlayer;
-
 	//怪物状态
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Enemy Status")
 	EEnemyMovementStatus EnemyMovementStatus;
@@ -71,6 +55,38 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Enemy Stats")
 	class UProgressBar* HealthBar;
+
+	//是否在攻击
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Attack")
+	bool bAttackVolumeOverlapping;
+
+	//动画蒙太奇的引用（只能编辑默认值）在蓝图在使用改变量
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack")
+	UAnimMontage* AttackMontage;
+
+	//插值速度
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+	float InterpSpeed;
+
+	//是否进行插值,在攻击时为false;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Attack")
+	bool bInterpToPlayer;
+
+	//伤害碰撞
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attack")
+	class UBoxComponent* LeftAttackCollision;
+
+	//伤害碰撞
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attack")
+	UBoxComponent* RightAttackCollision;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+	float Damage;
+
+	//在蓝图中指定,伤害类型
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+	TSubclassOf<UDamageType> DamageTypeClass;
+
 
 protected:
 	// Called when the game starts or when spawned
@@ -95,6 +111,34 @@ public:
 	UFUNCTION()
 	virtual void OnAttackVolumeOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32  OtherBodyIndex);
 
+	UFUNCTION()
+	virtual void OnLeftAttackCollisionOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	virtual void OnLeftAttackCollisionOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32  OtherBodyIndex);
+
+	UFUNCTION()
+	virtual void OnRightAttackCollisionOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	virtual void OnRightAttackCollisionOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32  OtherBodyIndex);
+
+	//激活LeftAttackCollision碰撞
+	UFUNCTION(BlueprintCallable)
+	void ActiveLeftAttackCollision();
+
+	//关闭LeftAttackCollision碰撞
+	UFUNCTION(BlueprintCallable)
+	void DeactiveLeftAttackCollision();
+
+	//激活RightAttackCollision碰撞
+	UFUNCTION(BlueprintCallable)
+	void ActiveRightAttackCollision();
+
+	//关闭RightAttackCollision碰撞
+	UFUNCTION(BlueprintCallable)
+	void DeactiveRightAttackCollision();
+
 	/**
 	 * @brief 移动到目标
 	 * @param TargetPlayer 玩家
@@ -106,4 +150,5 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void AttackEnd();
+
 };
