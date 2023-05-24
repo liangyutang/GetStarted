@@ -111,6 +111,13 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Animation")
 	UAnimMontage* AttackMontage;
 
+	//玩家要攻击的目标（近战修正-距离最近的目标）
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attack")
+	class ABaseEnemy* AttackTarget;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category ="Attack")
+	TSubclassOf<ABaseEnemy> EnemyFilter;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -168,4 +175,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void AttackEnd();
+
+	void UpdateAttackTarget();
 };

@@ -8,6 +8,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GamePlayer/WeaponItem.h"
+#include "GetStarted/Characters/Enemy/BaseEnemy.h"
 
 // Sets default values
 AMainPlayer::AMainPlayer()
@@ -68,6 +69,7 @@ AMainPlayer::AMainPlayer()
 	bAttackKeyDown = false;
 	bIsAttacking = false;
 
+	AttackTarget = nullptr;
 }
 
 // Called when the game starts or when spawned
@@ -413,5 +415,11 @@ void AMainPlayer::AttackEnd()
 	{
 		AttackKeyDown();
 	}
+}
+
+void AMainPlayer::UpdateAttackTarget()
+{
+	TArray<AActor*> OverlappingActors;
+	GetOverlappingActors(OverlappingActors, EnemyFilter);
 }
 
