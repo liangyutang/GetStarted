@@ -72,13 +72,13 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Attack")
 	bool bInterpToPlayer;
 
-	//…À∫¶≈ˆ◊≤
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attack")
+	////…À∫¶≈ˆ◊≤
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
 	class UBoxComponent* LeftAttackCollision;
 
 	//…À∫¶≈ˆ◊≤
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attack")
-	UBoxComponent* RightAttackCollision;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Attack")
+	class UBoxComponent* RightAttackCollision;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
 	float Damage;
@@ -93,7 +93,7 @@ public:
 
 	// ‹…À ±≤•∑≈µƒ…˘“Ù
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Hit Effect")
-	USoundCue* HitSound;
+	class USoundCue* HitSound;
 
 protected:
 	// Called when the game starts or when spawned

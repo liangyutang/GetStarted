@@ -43,6 +43,8 @@ AWeaponItem::AWeaponItem()
 
 	WeaponState = EWeaponState::EWS_CanPickup;
 
+	Damage = 10.0f;
+
 }
 
 void AWeaponItem::BeginPlay()

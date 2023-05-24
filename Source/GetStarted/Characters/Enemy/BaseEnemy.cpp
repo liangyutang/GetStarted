@@ -10,6 +10,7 @@
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
+#include "Engine/SkeletalMeshSocket.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -45,20 +46,26 @@ ABaseEnemy::ABaseEnemy()
 	AttackVolume->SetCollisionResponseToAllChannels(ECR_Ignore);
 	AttackVolume->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 
+	LeftAttackCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("LeftAttackCollision"));
+	LeftAttackCollision->SetupAttachment(GetMesh(), "LeftAttackSocket");
+	//LeftAttackCollision->SetupAttachment(GetRootComponent());
+	DeactiveLeftAttackCollision();
+	LeftAttackCollision->SetRelativeScale3D(FVector(2.5f, 0.5f, 0.25f));
+	LeftAttackCollision->SetRelativeLocation(FVector(-34.0f, 0.0f, 0.0f));
+
+	RightAttackCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("RightAttackCollision"));
+	RightAttackCollision->SetupAttachment(GetMesh(), "RightAttackSocket");
+	//RightAttackCollision->SetupAttachment(GetRootComponent());
+	DeactiveRightAttackCollision();
+	RightAttackCollision->SetRelativeScale3D(FVector(2.5f, 0.5f, 0.25f));
+	RightAttackCollision->SetRelativeLocation(FVector(34.0f, 0.0f, 0.0f));
+
 	HealthBarWidgetComponent= CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBarWidgetComponent"));
 	HealthBarWidgetComponent->SetupAttachment(GetRootComponent());
 	//在玩家屏幕上显示
 	HealthBarWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
 	//大小
 	HealthBarWidgetComponent->SetDrawSize(FVector2D(125.0f, 10.0f));
-
-	LeftAttackCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("LeftAttackCollision"));
-	LeftAttackCollision->SetupAttachment(GetMesh(),FName("LeftAttackCollision"));
-	DeactiveLeftAttackCollision();
-
-	RightAttackCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("RightAttackCollision"));
-	RightAttackCollision->SetupAttachment(GetMesh(), "RightAttackCollision");
-	DeactiveRightAttackCollision();
 
 	//设置AI
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
@@ -72,7 +79,7 @@ ABaseEnemy::ABaseEnemy()
 	InterpSpeed = 15.0f;
 	bInterpToPlayer = false;
 
-	Damage = 10;
+	Damage = 10.0f;
 }
 
 // Called when the game starts or when spawned
@@ -221,6 +228,36 @@ void ABaseEnemy::OnAttackVolumeOverlapEnd(UPrimitiveComponent* OverlappedCompone
 
 void ABaseEnemy::OnLeftAttackCollisionOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (OtherActor)
+	{
+		AMainPlayer* MainPlayer = Cast<AMainPlayer>(OtherActor);
+		if (MainPlayer)
+		{
+			//生成粒子效果
+			if (MainPlayer->HitParticles)
+			{
+				//在那个位置生成
+				const USkeletalMeshSocket* AttackSocket =GetMesh()->GetSocketByName("LeftAttackSocket");
+				if (AttackSocket)
+				{
+					const FVector SocketLocation = AttackSocket->GetSocketLocation(GetMesh());
+					UGameplayStatics::SpawnEmitterAtLocation(this, MainPlayer->HitParticles, SocketLocation, FRotator(0.0f), true);
+				}
+			}
+
+			//生成声音
+			if (MainPlayer->HitSound)
+			{
+				UGameplayStatics::PlaySound2D(this, MainPlayer->HitSound);
+			}
+
+			//施加伤害
+			if (DamageTypeClass)
+			{
+				UGameplayStatics::ApplyDamage(MainPlayer, Damage, AIController, this, DamageTypeClass);
+			}
+		}
+	}
 }
 
 void ABaseEnemy::OnLeftAttackCollisionOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
@@ -229,6 +266,36 @@ void ABaseEnemy::OnLeftAttackCollisionOverlapEnd(UPrimitiveComponent* Overlapped
 
 void ABaseEnemy::OnRightAttackCollisionOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (OtherActor)
+	{
+		AMainPlayer* MainPlayer = Cast<AMainPlayer>(OtherActor);
+		if (MainPlayer)
+		{
+			//生成粒子效果
+			if (MainPlayer->HitParticles)
+			{
+				//在那个位置生成
+				const USkeletalMeshSocket* AttackSocket = GetMesh()->GetSocketByName("RightAttackSocket");
+				if (AttackSocket)
+				{
+					const FVector SocketLocation = AttackSocket->GetSocketLocation(GetMesh());
+					UGameplayStatics::SpawnEmitterAtLocation(this, MainPlayer->HitParticles, SocketLocation, FRotator(0.0f), true);
+				}
+			}
+
+			//生成声音
+			if (MainPlayer->HitSound)
+			{
+				UGameplayStatics::PlaySound2D(this, MainPlayer->HitSound);
+			}
+
+			//施加伤害
+			if (DamageTypeClass)
+			{
+				UGameplayStatics::ApplyDamage(MainPlayer, Damage, AIController, this, DamageTypeClass);
+			}
+		}
+	}
 }
 
 void ABaseEnemy::OnRightAttackCollisionOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
