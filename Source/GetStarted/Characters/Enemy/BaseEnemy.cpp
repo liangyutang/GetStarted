@@ -98,6 +98,8 @@ void ABaseEnemy::BeginPlay()
 	HealthBar= Cast<UProgressBar>(HealthBarWidgetComponent->GetUserWidgetObject()->GetWidgetFromName("HealthBar"));
 	//ÉèÖÃ°Ù·Ö±È
 	HealthBar->SetPercent(Health / MaxHealth);
+	//¸Õ¿ªÊ¼Òþ²Ø
+	HealthBar->SetVisibility(ESlateVisibility::Hidden);
 
 	AIController = Cast<AAIController>(GetController());
 	
@@ -135,6 +137,7 @@ void ABaseEnemy::OnChaseVolumeOverlapBegin(UPrimitiveComponent* OverlappedCompon
 		const AMainPlayer* MainPlayer = Cast<AMainPlayer>(OtherActor);
 		if (MainPlayer)
 		{
+			HealthBar->SetVisibility(ESlateVisibility::Visible);
 			//×·ÖðÍæ¼Ò
 			MoveToTarget(MainPlayer);
 		}
@@ -150,6 +153,8 @@ void ABaseEnemy::OnChaseVolumeOverlapEnd(UPrimitiveComponent* OverlappedComponen
 		{
 			/**Í£Ö¹×·Öð*/
 			EnemyMovementStatus = EEnemyMovementStatus::EEMS_Idle;
+
+			HealthBar->SetVisibility(ESlateVisibility::Hidden);
 
 			if (AIController)
 			{
