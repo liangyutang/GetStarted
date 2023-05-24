@@ -49,6 +49,14 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack")
 	UAnimMontage* AttackMontage;
 
+	//插值速度
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+	float InterpSpeed;
+
+	//是否进行插值,在攻击时为false;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Attack")
+	bool bInterpToPlayer;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

@@ -153,6 +153,7 @@ void AMainPlayer::Tick(float DeltaTime)
 		break;
 	}
 
+	//使用玩家面向敌人
 	//不在攻击状态下，且敌人不为空
 	if (bInterpToEnemy && AttackTarget)
 	{

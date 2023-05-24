@@ -7,6 +7,8 @@
 #include "MainPlayer.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values
@@ -34,7 +36,8 @@ ABaseEnemy::ABaseEnemy()
 	EnemyMovementStatus = EEnemyMovementStatus::EEMS_Idle;
 
 	bAttackVolumeOverlapping = false;
-
+	InterpSpeed = 15.0f;
+	bInterpToPlayer = false;
 }
 
 // Called when the game starts or when spawned
@@ -74,6 +77,17 @@ void ABaseEnemy::BeginPlay()
 void ABaseEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	//使用玩家面向敌人
+	//不在攻击状态下
+	if (bInterpToPlayer)
+	{
+		//获得玩家对敌人的	朝向(获取0号玩家：GameplayStatics::GetPlayerPawn(this,0))
+		const FRotator LookAtYaw(0.0f, UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), UGameplayStatics::GetPlayerPawn(this,0)->GetActorLocation()).Yaw, 0.0f);
+		//面向敌人
+		const FRotator InterpRotation = FMath::RInterpTo(GetActorRotation(), LookAtYaw, DeltaTime, InterpSpeed);
+		SetActorRotation(InterpRotation);
+	}
 
 }
 
@@ -193,6 +207,8 @@ void ABaseEnemy::Attack()
 	{
 		EnemyMovementStatus = EEnemyMovementStatus::EEMS_Attacking;
 
+		bInterpToPlayer = true;
+
 		//获取动画实例
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 		if (AnimInstance)
@@ -213,6 +229,8 @@ void ABaseEnemy::Attack()
 void ABaseEnemy::AttackEnd()
 {
 	EnemyMovementStatus = EEnemyMovementStatus::EEMS_Idle;
+
+	bInterpToPlayer = false;
 
 	if (bAttackVolumeOverlapping)
 	{
