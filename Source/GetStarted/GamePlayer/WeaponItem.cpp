@@ -5,6 +5,7 @@
 
 #include "Components/SphereComponent.h"
 #include "MainPlayer.h"
+#include "Characters/Enemy/BaseEnemy.h"
 #include "Components/BoxComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "GameFramework/PawnMovementComponent.h"
@@ -182,6 +183,36 @@ void AWeaponItem::DeactiveDisplayMeshCollision()
 void AWeaponItem::OnAttackCollisionOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (OtherActor)
+	{
+		ABaseEnemy* BaseEnemy = Cast<ABaseEnemy>(OtherActor);
+		if (BaseEnemy)
+		{
+			//生成粒子效果
+			if (BaseEnemy->HitParticles)
+			{
+				//在那个位置生成
+				const USkeletalMeshSocket* WeaponSocket = ((USkeletalMeshComponent*)DisplayMesh)->GetSocketByName("WeaponSocket");
+				if (WeaponSocket)
+				{
+					const FVector SocketLocation = WeaponSocket->GetSocketLocation((USkeletalMeshComponent*)DisplayMesh);
+					UGameplayStatics::SpawnEmitterAtLocation(this, BaseEnemy->HitParticles, SocketLocation, FRotator(0.0f), true);
+				}
+			}
+
+			//生成声音
+			if (BaseEnemy->HitSound)
+			{
+				UGameplayStatics::PlaySound2D(this, BaseEnemy->HitSound);
+			}
+
+			//施加伤害
+			if (DamageTypeClass)
+			{
+				UGameplayStatics::ApplyDamage(BaseEnemy, Damage, WeaponOwner,this,DamageTypeClass);
+			}
+		}
+	}
 }
 
 void AWeaponItem::OnAttackCollisionOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Sound/SoundCue.h"
 #include "MainPlayer.generated.h"
 
 UENUM(BlueprintType)
@@ -126,6 +127,14 @@ public:
 	//是否进行插值,在攻击时为false;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Attack")
 	bool bInterpToEnemy;
+
+	//受伤时播放的粒子效果
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Hit Effect")
+	UParticleSystem* HitParticles;
+
+	//受伤时播放的声音
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Hit Effect")
+	USoundCue* HitSound;
 
 protected:
 	// Called when the game starts or when spawned

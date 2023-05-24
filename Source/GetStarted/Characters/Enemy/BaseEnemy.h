@@ -87,6 +87,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
 	TSubclassOf<UDamageType> DamageTypeClass;
 
+	//受伤时播放的粒子效果
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Hit Effect")
+	UParticleSystem* HitParticles;
+
+	//受伤时播放的声音
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Hit Effect")
+	USoundCue* HitSound;
 
 protected:
 	// Called when the game starts or when spawned
