@@ -5,6 +5,7 @@
 
 #include "Components/SphereComponent.h"
 #include "MainPlayer.h"
+#include "Components/BoxComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -22,6 +23,10 @@ AWeaponItem::AWeaponItem()
 	DisplayMesh->SetupAttachment(GetRootComponent());
 	//激活碰撞
 	ActiveDisplayMeshCollision();
+
+	AttackCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("AttackCollision"));
+	AttackCollision->SetupAttachment(GetRootComponent());
+	DeactiveAttackCollisionCollision();
 
 	//硬编码加载音效
 	static  ConstructorHelpers::FObjectFinder<USoundCue> SoundCueAsset(TEXT("SoundCue'/Game/Assets/Audios/Blade_Cue.Blade_Cue'"));
@@ -46,6 +51,9 @@ void AWeaponItem::BeginPlay()
 void AWeaponItem::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	Super::OnOverlapBegin(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
+
+	AttackCollision->OnComponentBeginOverlap.AddDynamic(this, &AWeaponItem::OnAttackCollisionOverlapBegin);
+	AttackCollision->OnComponentEndOverlap.AddDynamic(this, &AWeaponItem::OnAttackCollisionOverlapEnd);
 
 	//范围内是否有实体，并且为可拾取状态
 	if (OtherActor && WeaponState==EWeaponState::EWS_CanPickup)
@@ -168,4 +176,33 @@ void AWeaponItem::DeactiveDisplayMeshCollision()
 	//设置触发器的碰撞检测
 	//设置体积的状态-无碰撞
 	DisplayMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+void AWeaponItem::OnAttackCollisionOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+}
+
+void AWeaponItem::OnAttackCollisionOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+}
+
+void AWeaponItem::ActiveAttackCollisionCollision()
+{
+	//设置触发器的碰撞检测
+	//设置体积的状态-查询与物理
+	AttackCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	//指定当前的碰撞类型
+	AttackCollision->SetCollisionObjectType(ECC_WorldDynamic);
+	//只响应pawn，其他不响应
+	AttackCollision->SetCollisionResponseToAllChannels(ECR_Ignore);
+	AttackCollision->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+}
+
+void AWeaponItem::DeactiveAttackCollisionCollision()
+{
+	//设置触发器的碰撞检测
+	//设置体积的状态-无碰撞
+	AttackCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }

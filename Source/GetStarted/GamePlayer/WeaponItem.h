@@ -40,6 +40,21 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Weapon")
 	EWeaponState WeaponState;
 
+	//ÉËº¦Åö×²
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly,Category="Weapon|Attack")
+	class UBoxComponent* AttackCollision;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon|Attack")
+	float Damage;
+
+	//ÔÚÀ¶Í¼ÖÐÖ¸¶¨
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon|Attack")
+	TSubclassOf<UDamageType> DamageTypeClass;
+
+	//ÎäÆ÷ÓµÓÐÕß
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon|Attack")
+	AController* WeaponOwner;
+
 protected:
 
 	virtual void BeginPlay() override;
@@ -56,9 +71,23 @@ public:
 	//Ð¶ÏÂÎäÆ÷
 	void UnEquip(AMainPlayer* MainPlayer);
 
-	//¼¤»îÅö×²
+	//¼¤»îDisplayMeshÅö×²
 	void ActiveDisplayMeshCollision();
 
-	//¹Ø±ÕÅö×²
+	//¹Ø±ÕDisplayMeshÅö×²
 	void DeactiveDisplayMeshCollision();
+
+	UFUNCTION()
+	virtual void OnAttackCollisionOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	virtual void OnAttackCollisionOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32  OtherBodyIndex);
+
+	//¼¤»îAttackCollisionÅö×²
+	UFUNCTION(BlueprintCallable)
+	void ActiveAttackCollisionCollision();
+
+	//¹Ø±ÕAttackCollisionÅö×²
+	UFUNCTION(BlueprintCallable)
+	void DeactiveAttackCollisionCollision();
 };
