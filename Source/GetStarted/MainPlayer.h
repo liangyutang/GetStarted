@@ -176,5 +176,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void AttackEnd();
 
+	UFUNCTION()
 	void UpdateAttackTarget();
 };

@@ -120,9 +120,12 @@ void ABaseEnemy::OnAttackVolumeOverlapBegin(UPrimitiveComponent* OverlappedCompo
 {
 	if (OtherActor)
 	{
-		const AMainPlayer* MainPlayer = Cast<AMainPlayer>(OtherActor);
+		AMainPlayer* MainPlayer = Cast<AMainPlayer>(OtherActor);
 		if (MainPlayer)
 		{
+			//更新玩家的攻击目标
+			MainPlayer->UpdateAttackTarget();
+
 			bAttackVolumeOverlapping = true;
 			Attack();
 		}

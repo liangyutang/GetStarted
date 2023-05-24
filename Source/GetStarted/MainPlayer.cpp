@@ -417,9 +417,44 @@ void AMainPlayer::AttackEnd()
 	}
 }
 
+/**
+ * @brief 寻找最近的敌人为攻击目标
+ */
 void AMainPlayer::UpdateAttackTarget()
 {
 	TArray<AActor*> OverlappingActors;
 	GetOverlappingActors(OverlappingActors, EnemyFilter);
+
+	//看看范围内是否有敌人
+	if (OverlappingActors.Num()==0)
+	{
+		AttackTarget = nullptr;
+		return;
+	}
+
+	ABaseEnemy* CloseEnemy = nullptr;
+
+	//最小距离
+	float MinDistance = 1000.0f;
+
+	const FVector Location = GetActorLocation();
+
+	for (const auto Actor:OverlappingActors)
+	{
+		ABaseEnemy* Enemy = Cast<ABaseEnemy>(Actor);
+		//敌人存在，且未死亡
+		if (Enemy&&Enemy->EnemyMovementStatus!=EEnemyMovementStatus::EEMS_Dead)
+		{
+			//计算距离
+			const float DistanceToActor = (Enemy->GetActorLocation() - Location).Size();
+			if (DistanceToActor<MinDistance)
+			{
+				MinDistance = DistanceToActor;
+				CloseEnemy = Enemy;
+			}
+		}
+	}
+
+	AttackTarget = CloseEnemy;
 }
 
