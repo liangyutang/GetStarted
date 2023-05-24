@@ -67,7 +67,7 @@ public:
 
 	//敌人血条显示组件
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Enemy Stats")
-	class UWidetComponent* HealthBarWidgetComponent;
+	class UWidgetComponent* HealthBarWidgetComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Enemy Stats")
 	class UProgressBar* HealthBar;

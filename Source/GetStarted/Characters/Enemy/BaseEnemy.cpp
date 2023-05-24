@@ -5,6 +5,8 @@
 
 #include "AIController.h"
 #include "MainPlayer.h"
+#include "ProgressBar.h"
+#include "WidgetComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -24,11 +26,31 @@ ABaseEnemy::ABaseEnemy()
 	ChaseVolume = CreateDefaultSubobject<USphereComponent>(TEXT("ChaseVolume"));
 	ChaseVolume->SetupAttachment(GetRootComponent());
 	ChaseVolume->InitSphereRadius(800.0f);
+	//设置碰撞检测
+	//指定当前的碰撞类型
+	ChaseVolume->SetCollisionObjectType(ECC_WorldDynamic);
+	//只响应pawn，其他不响应,不知道为什么，AttackVolume->SetCollisionResponseToAllChannels(ECR_Ignore);不生效
+	ChaseVolume->SetCollisionResponseToAllChannels(ECR_Ignore);
+	ChaseVolume->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 	
 
 	AttackVolume = CreateDefaultSubobject<USphereComponent>(TEXT("AttackVolume"));
 	AttackVolume->SetupAttachment(GetRootComponent());
 	AttackVolume->InitSphereRadius(100.0f);
+	//设置碰撞检测
+	//指定当前的碰撞类型
+	AttackVolume->SetCollisionObjectType(ECC_WorldDynamic);
+	//只响应pawn，其他不响应,不知道为什么，AttackVolume->SetCollisionResponseToAllChannels(ECR_Ignore);不生效
+	AttackVolume->SetCollisionResponseToAllChannels(ECR_Ignore);
+	AttackVolume->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+
+	HealthBarWidgetComponent= CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBarWidgetComponent"));
+	HealthBarWidgetComponent->SetupAttachment(GetRootComponent());
+	//在玩家屏幕上显示
+	HealthBarWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
+	//大小
+	HealthBarWidgetComponent->SetDrawSize(FVector2D(125.0f, 10.0f));
+
 
 	//设置AI
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
@@ -71,6 +93,11 @@ void ABaseEnemy::BeginPlay()
 	AttackVolume->OnComponentBeginOverlap.AddDynamic(this, &ABaseEnemy::OnAttackVolumeOverlapBegin);
 	//当重叠事件结束时
 	AttackVolume->OnComponentEndOverlap.AddDynamic(this, &ABaseEnemy::OnAttackVolumeOverlapEnd);
+
+	//获取血量条对应的组件
+	HealthBar= Cast<UProgressBar>(HealthBarWidgetComponent->GetUserWidgetObject()->GetWidgetFromName("HealthBar"));
+	//设置百分比
+	HealthBar->SetPercent(Health / MaxHealth);
 
 	AIController = Cast<AAIController>(GetController());
 	
