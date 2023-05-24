@@ -37,10 +37,6 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
 	class AAIController* AIController;
 
-	//怪物状态
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Enemy Status")
-	EEnemyMovementStatus EnemyMovementStatus;
-
 	//是否在攻击
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Attack")
 	bool bAttackVolumeOverlapping;
@@ -56,6 +52,25 @@ public:
 	//是否进行插值,在攻击时为false;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Attack")
 	bool bInterpToPlayer;
+
+	//怪物状态
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Enemy Status")
+	EEnemyMovementStatus EnemyMovementStatus;
+
+	//最大血量
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy Stats")
+	float MaxHealth;
+
+	//当前血量
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy Stats")
+	float Health;
+
+	//敌人血条显示组件
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Enemy Stats")
+	class UWidetComponent* HealthBarWidgetComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Enemy Stats")
+	class UProgressBar* HealthBar;
 
 protected:
 	// Called when the game starts or when spawned

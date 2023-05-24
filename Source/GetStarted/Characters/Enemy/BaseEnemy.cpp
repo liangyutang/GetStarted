@@ -32,8 +32,11 @@ ABaseEnemy::ABaseEnemy()
 
 	//设置AI
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+
 	//设置AI状态为游走状态
 	EnemyMovementStatus = EEnemyMovementStatus::EEMS_Idle;
+	MaxHealth = 100.0f;
+	Health = MaxHealth;
 
 	bAttackVolumeOverlapping = false;
 	InterpSpeed = 15.0f;
