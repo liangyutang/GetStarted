@@ -452,6 +452,9 @@ void ABaseEnemy::Die()
 	//死亡状态
 	EnemyMovementStatus = EEnemyMovementStatus::EEMS_Dead;
 
+	//移除血条
+	HealthBar->SetVisibility(ESlateVisibility::Hidden);
+
 	//消除碰撞
 	DeactiveLeftAttackCollision();
 	DeactiveRightAttackCollision();
@@ -465,6 +468,18 @@ void ABaseEnemy::Die()
 
 void ABaseEnemy::DeathEnd()
 {
+	//禁用所有动画相关
+	GetMesh()->bPauseAnims = true;
+	GetMesh()->bNoSkeletonUpdate = true;
+
+	//1秒后，销毁
+	FTimerHandle DeathTimerHandle;
+	auto Lambda = [this]()
+	{
+		Destroy();
+	};
+
+	GetWorldTimerManager().SetTimer(DeathTimerHandle, FTimerDelegate::CreateLambda(Lambda), 1.0f, false);
 }
 
 bool ABaseEnemy::HasValidTarget()

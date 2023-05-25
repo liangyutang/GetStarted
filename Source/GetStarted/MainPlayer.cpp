@@ -527,5 +527,17 @@ void AMainPlayer::Die()
 
 void AMainPlayer::DeathEnd()
 {
+	//禁用所有动画相关
+	GetMesh()->bPauseAnims = true;
+	GetMesh()->bNoSkeletonUpdate = true;
+
+	//1秒后，调用RestartLevel()
+	FTimerHandle DeathTimerHandle;
+	auto Lambda = [this]()
+	{
+		//TODO RestartLevel();
+	};
+
+	GetWorldTimerManager().SetTimer(DeathTimerHandle, FTimerDelegate::CreateLambda(Lambda), 1.0f, false);
 }
 
