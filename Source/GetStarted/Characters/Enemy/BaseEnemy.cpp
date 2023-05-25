@@ -421,7 +421,7 @@ float ABaseEnemy::TakeDamage(float Damage, FDamageEvent const& DamageEvent, ACon
 	if (Health - Damage <= 0.0f)
 	{
 		Health = FMath::Clamp(Health - Damage, 0.0f, MaxHealth);
-		//TODO Die();
+		Die();
 	}
 	else
 	{
@@ -452,5 +452,10 @@ void ABaseEnemy::Die()
 
 void ABaseEnemy::DeathEnd()
 {
+}
+
+bool ABaseEnemy::HasValidTarget()
+{
+	return ((AMainPlayer*)UGameplayStatics::GetPlayerPawn(this, 0))->MovementStatus != EPlayerMovementStatus::EPMS_Dead;
 }
 

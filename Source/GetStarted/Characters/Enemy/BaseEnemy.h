@@ -164,4 +164,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void DeathEnd();
+
+	FORCEINLINE bool IsAlive() const { return EnemyMovementStatus != EEnemyMovementStatus::EEMS_Dead; }
+
+	bool HasValidTarget();
 };

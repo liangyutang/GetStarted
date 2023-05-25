@@ -87,6 +87,11 @@ void AMainPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (!IsAlive())
+	{
+		return;
+	}
+
 	switch (StaminaStatus)
 	{
 	case EPlayerStaminaStatus::EPSS_Normal:
@@ -206,8 +211,9 @@ void AMainPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 void AMainPlayer::Jump()
 {
+
 	//攻击时，不允许跳跃
-	if (!bIsAttacking)
+	if (!bIsAttacking && IsAlive())
 	{
 		Super::Jump();
 	}
@@ -219,7 +225,7 @@ void AMainPlayer::MoveForward(float Value)
 	//AddMovementInput(GetActorForwardVector(), Value);
 
 	//攻击时不可移动
-	if ((Controller != nullptr) && (Value != 0.0f)&&(!bIsAttacking))
+	if ((Controller != nullptr) && (Value != 0.0f)&&(!bIsAttacking) && IsAlive())
 	{
 		//获取摄像机的角度
 		FRotator Rotator = Controller->GetControlRotation();
@@ -241,7 +247,7 @@ void AMainPlayer::MoveRight(float Value)
 
 
 	//攻击时不可移动
-	if ((Controller != nullptr) && (Value != 0.0f)&&(!bIsAttacking))
+	if ((Controller != nullptr) && (Value != 0.0f)&&(!bIsAttacking) && IsAlive())
 	{
 		FRotator Rotator = Controller->GetControlRotation();
 		FRotator YawRotator(0.0f, Rotator.Yaw, 0.0f);
@@ -252,7 +258,7 @@ void AMainPlayer::MoveRight(float Value)
 
 void AMainPlayer::Turn(float Value)
 {
-	if (Value!=0.0f)
+	if (Value!=0.0f && IsAlive())
 	{
 		AddControllerYawInput(Value);
 	}
@@ -260,6 +266,11 @@ void AMainPlayer::Turn(float Value)
 
 void AMainPlayer::LookUp(float Value)
 {
+	if (!IsAlive())
+	{
+		return;
+	}
+
 	//只允许视角在0-45度，270-360度之间（视角正向面对角色背部时，视角度数为0或360度）
 	//当视角在180-270度之间，但是玩家仍然向上抬视角，则不被运行，若向下，则允许
 	if (GetControlRotation().Pitch<270.0f&&GetControlRotation().Pitch>180&&Value>0.0f)
@@ -278,7 +289,7 @@ void AMainPlayer::LookUp(float Value)
 void AMainPlayer::TurnAtRate(float Rate)
 {
 	float Value = Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds();
-	if (Value != 0.0f)
+	if (Value != 0.0f && IsAlive())
 	{
 		AddControllerYawInput(Value);
 	}
@@ -286,7 +297,12 @@ void AMainPlayer::TurnAtRate(float Rate)
 
 void AMainPlayer::LookUpAtRate(float Rate)
 {
-	float Value = Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds();
+	if (!IsAlive())
+	{
+		return;
+	}
+
+	const float Value = Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds();
 	//if (Value != 0.0f)
 	//{
 	//	AddControllerPitchInput(Value);
@@ -330,7 +346,7 @@ float AMainPlayer::TakeDamage(float Damage, FDamageEvent const& DamageEvent, ACo
 	if (Health-Damage<=0.0f)
 	{
 		Health = FMath::Clamp(Health - Damage, 0.0f, MaxHealth);
-		//TODO Die();
+		Die();
 	}
 	else
 	{
@@ -342,6 +358,12 @@ float AMainPlayer::TakeDamage(float Damage, FDamageEvent const& DamageEvent, ACo
 
 void AMainPlayer::SetMovementStatus(EPlayerMovementStatus status)
 {
+	if (!IsAlive())
+	{
+		return;
+	}
+
+
 	MovementStatus = status;
 	switch (MovementStatus)
 	{
@@ -357,6 +379,12 @@ void AMainPlayer::SetMovementStatus(EPlayerMovementStatus status)
 
 void AMainPlayer::InteractKeyDown()
 {
+	if (!IsAlive())
+	{
+		return;
+	}
+
+
 	//是否有武器在范围内
 	if (OverlappingWeapon)
 	{
@@ -386,6 +414,12 @@ void AMainPlayer::InteractKeyDown()
 
 void AMainPlayer::AttackKeyDown()
 {
+	if (!IsAlive())
+	{
+		return;
+	}
+
+
 	bAttackKeyDown = true;
 
 	if (bHasWeapon)
@@ -397,6 +431,12 @@ void AMainPlayer::AttackKeyDown()
 
 void AMainPlayer::Attack()
 {
+	if (!IsAlive())
+	{
+		return;
+	}
+
+
 	//在空中或者攻击时，不会调用
 	if (!bIsAttacking && !(GetMovementComponent()->IsFalling()))
 	{
@@ -423,6 +463,12 @@ void AMainPlayer::Attack()
 
 void AMainPlayer::AttackEnd()
 {
+	if (!IsAlive())
+	{
+		return;
+	}
+
+
 	bIsAttacking = false;
 	bInterpToEnemy = false;
 
@@ -438,6 +484,12 @@ void AMainPlayer::AttackEnd()
  */
 void AMainPlayer::UpdateAttackTarget()
 {
+	if (!IsAlive())
+	{
+		return;
+	}
+
+
 	TArray<AActor*> OverlappingActors;
 	GetOverlappingActors(OverlappingActors, EnemyFilter);
 

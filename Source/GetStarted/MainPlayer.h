@@ -201,4 +201,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void DeathEnd();
+
+	FORCEINLINE bool IsAlive() const { return MovementStatus != EPlayerMovementStatus::EPMS_Dead; }
 };
