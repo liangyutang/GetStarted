@@ -297,12 +297,12 @@ void AMainPlayer::TurnAtRate(float Rate)
 
 void AMainPlayer::LookUpAtRate(float Rate)
 {
+	const float Value = Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds();
 	if (!IsAlive())
 	{
 		return;
 	}
-
-	const float Value = Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds();
+	
 	//if (Value != 0.0f)
 	//{
 	//	AddControllerPitchInput(Value);
@@ -431,14 +431,8 @@ void AMainPlayer::AttackKeyDown()
 
 void AMainPlayer::Attack()
 {
-	if (!IsAlive())
-	{
-		return;
-	}
-
-
 	//在空中或者攻击时，不会调用
-	if (!bIsAttacking && !(GetMovementComponent()->IsFalling()))
+	if (!bIsAttacking && !(GetMovementComponent()->IsFalling())&& IsAlive())
 	{
 		//当前没有在攻击
 		bIsAttacking = true;
@@ -463,14 +457,13 @@ void AMainPlayer::Attack()
 
 void AMainPlayer::AttackEnd()
 {
+	bIsAttacking = false;
+	bInterpToEnemy = false;
+
 	if (!IsAlive())
 	{
 		return;
 	}
-
-
-	bIsAttacking = false;
-	bInterpToEnemy = false;
 
 	//攻击键仍然被按着
 	if (bAttackKeyDown)
@@ -484,12 +477,6 @@ void AMainPlayer::AttackEnd()
  */
 void AMainPlayer::UpdateAttackTarget()
 {
-	if (!IsAlive())
-	{
-		return;
-	}
-
-
 	TArray<AActor*> OverlappingActors;
 	GetOverlappingActors(OverlappingActors, EnemyFilter);
 

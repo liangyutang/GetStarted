@@ -139,7 +139,7 @@ void ABaseEnemy::Tick(float DeltaTime)
 
 	//使用玩家面向敌人
 	//不在攻击状态下
-	if (bInterpToPlayer)
+	if (bInterpToPlayer && HasValidTarget() && IsAlive())
 	{
 		//获得玩家对敌人的	朝向(获取0号玩家：GameplayStatics::GetPlayerPawn(this,0))
 		const FRotator LookAtYaw(0.0f, UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), UGameplayStatics::GetPlayerPawn(this,0)->GetActorLocation()).Yaw, 0.0f);
@@ -159,7 +159,7 @@ void ABaseEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 
 void ABaseEnemy::OnChaseVolumeOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor)
+	if (OtherActor && IsAlive())
 	{
 		const AMainPlayer* MainPlayer = Cast<AMainPlayer>(OtherActor);
 		if (MainPlayer)
@@ -173,7 +173,7 @@ void ABaseEnemy::OnChaseVolumeOverlapBegin(UPrimitiveComponent* OverlappedCompon
 
 void ABaseEnemy::OnChaseVolumeOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if (OtherActor)
+	if (OtherActor && IsAlive())
 	{
 		const AMainPlayer* MainPlayer = Cast<AMainPlayer>(OtherActor);
 		if (MainPlayer)
@@ -194,7 +194,7 @@ void ABaseEnemy::OnChaseVolumeOverlapEnd(UPrimitiveComponent* OverlappedComponen
 
 void ABaseEnemy::OnAttackVolumeOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor)
+	if (OtherActor && IsAlive())
 	{
 		AMainPlayer* MainPlayer = Cast<AMainPlayer>(OtherActor);
 		if (MainPlayer)
@@ -211,7 +211,7 @@ void ABaseEnemy::OnAttackVolumeOverlapBegin(UPrimitiveComponent* OverlappedCompo
 void ABaseEnemy::OnAttackVolumeOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if (OtherActor)
+	if (OtherActor && IsAlive())
 	{
 		const AMainPlayer* MainPlayer = Cast<AMainPlayer>(OtherActor);
 		if (MainPlayer)
@@ -228,7 +228,8 @@ void ABaseEnemy::OnAttackVolumeOverlapEnd(UPrimitiveComponent* OverlappedCompone
 
 void ABaseEnemy::OnLeftAttackCollisionOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor)
+
+	if (OtherActor && IsAlive())
 	{
 		AMainPlayer* MainPlayer = Cast<AMainPlayer>(OtherActor);
 		if (MainPlayer)
@@ -266,7 +267,7 @@ void ABaseEnemy::OnLeftAttackCollisionOverlapEnd(UPrimitiveComponent* Overlapped
 
 void ABaseEnemy::OnRightAttackCollisionOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor)
+	if (OtherActor && IsAlive())
 	{
 		AMainPlayer* MainPlayer = Cast<AMainPlayer>(OtherActor);
 		if (MainPlayer)
@@ -342,6 +343,10 @@ void ABaseEnemy::DeactiveRightAttackCollision()
 
 void ABaseEnemy::MoveToTarget(const AMainPlayer* TargetPlayer)
 {
+	if (!IsAlive())
+	{
+		return;
+	}
 	//设置为追逐状态
 	EnemyMovementStatus = EEnemyMovementStatus::EEMS_MoveToTarget;
 
@@ -374,43 +379,51 @@ void ABaseEnemy::MoveToTarget(const AMainPlayer* TargetPlayer)
 
 void ABaseEnemy::Attack()
 {
-	if (AIController)
+	if (IsAlive() && HasValidTarget())
 	{
-		AIController->StopMovement();
-	}
-	//看现在是否在攻击
-	if (EnemyMovementStatus!=EEnemyMovementStatus::EEMS_Attacking)
-	{
-		EnemyMovementStatus = EEnemyMovementStatus::EEMS_Attacking;
-
-		bInterpToPlayer = true;
-
-		//获取动画实例
-		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-		if (AnimInstance)
+		if (AIController)
 		{
-			//获取随机播放速率
-			const float PlayRate = FMath::RandRange(0.9f, 1.1f);
-			//获取随机section
-			const FString SectionName = FString::FromInt(FMath::RandRange(1, 3));
+			AIController->StopMovement();
+		}
+		//看现在是否在攻击
+		if (EnemyMovementStatus != EEnemyMovementStatus::EEMS_Attacking)
+		{
+			EnemyMovementStatus = EEnemyMovementStatus::EEMS_Attacking;
 
-			//用那种速率播放那个蒙太奇
-			AnimInstance->Montage_Play(AttackMontage, PlayRate);
-			//播放蒙太奇的那个section
-			AnimInstance->Montage_JumpToSection(FName(*SectionName), AttackMontage);
+			bInterpToPlayer = true;
+
+			//获取动画实例
+			UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+			if (AnimInstance)
+			{
+				//获取随机播放速率
+				const float PlayRate = FMath::RandRange(0.9f, 1.1f);
+				//获取随机section
+				const FString SectionName = FString::FromInt(FMath::RandRange(1, 3));
+
+				//用那种速率播放那个蒙太奇
+				AnimInstance->Montage_Play(AttackMontage, PlayRate);
+				//播放蒙太奇的那个section
+				AnimInstance->Montage_JumpToSection(FName(*SectionName), AttackMontage);
+			}
 		}
 	}
+
+	
 }
 
 void ABaseEnemy::AttackEnd()
 {
-	EnemyMovementStatus = EEnemyMovementStatus::EEMS_Idle;
-
 	bInterpToPlayer = false;
 
-	if (bAttackVolumeOverlapping)
+	if (IsAlive() && HasValidTarget())
 	{
-		Attack();
+		EnemyMovementStatus = EEnemyMovementStatus::EEMS_Idle;
+
+		if (bAttackVolumeOverlapping)
+		{
+			Attack();
+		}
 	}
 }
 
@@ -447,7 +460,7 @@ void ABaseEnemy::Die()
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	//使玩家改变攻击目标
-	((AMainPlayer*)UGameplayStatics::GetPlayerPawn(this, 0))->UpdateAttackTarget();
+	Cast<AMainPlayer>(UGameplayStatics::GetPlayerPawn(this, 0))->UpdateAttackTarget();
 }
 
 void ABaseEnemy::DeathEnd()
@@ -456,6 +469,6 @@ void ABaseEnemy::DeathEnd()
 
 bool ABaseEnemy::HasValidTarget()
 {
-	return ((AMainPlayer*)UGameplayStatics::GetPlayerPawn(this, 0))->MovementStatus != EPlayerMovementStatus::EPMS_Dead;
+	return Cast<AMainPlayer>(UGameplayStatics::GetPlayerPawn(this, 0))->MovementStatus != EPlayerMovementStatus::EPMS_Dead;
 }
 

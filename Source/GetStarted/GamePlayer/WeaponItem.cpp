@@ -28,7 +28,6 @@ AWeaponItem::AWeaponItem()
 	AttackCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("AttackCollision"));
 	//∏Ω◊≈socket
 	AttackCollision->SetupAttachment(DisplayMesh,"WeaponSocket");
-	ActiveAttackCollision();
 	DeactiveAttackCollision();
 
 	//”≤±‡¬Îº”‘ÿ“Ù–ß
