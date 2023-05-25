@@ -160,4 +160,8 @@ public:
 
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
+	void Die();
+
+	UFUNCTION(BlueprintCallable)
+	void DeathEnd();
 };

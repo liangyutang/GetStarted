@@ -196,4 +196,9 @@ public:
 
 	UFUNCTION()
 	void UpdateAttackTarget();
+
+	void Die();
+
+	UFUNCTION(BlueprintCallable)
+	void DeathEnd();
 };

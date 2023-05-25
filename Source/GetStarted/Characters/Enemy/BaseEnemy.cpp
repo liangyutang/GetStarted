@@ -434,3 +434,23 @@ float ABaseEnemy::TakeDamage(float Damage, FDamageEvent const& DamageEvent, ACon
 	return Health;
 }
 
+void ABaseEnemy::Die()
+{
+	//死亡状态
+	EnemyMovementStatus = EEnemyMovementStatus::EEMS_Dead;
+
+	//消除碰撞
+	DeactiveLeftAttackCollision();
+	DeactiveRightAttackCollision();
+	AttackVolume->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	ChaseVolume->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	//使玩家改变攻击目标
+	((AMainPlayer*)UGameplayStatics::GetPlayerPawn(this, 0))->UpdateAttackTarget();
+}
+
+void ABaseEnemy::DeathEnd()
+{
+}
+

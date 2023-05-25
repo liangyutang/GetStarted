@@ -474,3 +474,19 @@ void AMainPlayer::UpdateAttackTarget()
 	AttackTarget = CloseEnemy;
 }
 
+void AMainPlayer::Die()
+{
+	SetMovementStatus(EPlayerMovementStatus::EPMS_Dead);
+	//是否装备武器
+	if (EquippedWeapon)
+	{
+		//消除碰撞
+		EquippedWeapon->DeactiveAttackCollision();
+		EquippedWeapon->DeactiveDisplayMeshCollision();
+	}
+}
+
+void AMainPlayer::DeathEnd()
+{
+}
+
