@@ -28,6 +28,7 @@ AWeaponItem::AWeaponItem()
 	AttackCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("AttackCollision"));
 	//附着socket
 	AttackCollision->SetupAttachment(DisplayMesh,"WeaponSocket");
+	ActiveAttackCollision();
 	DeactiveAttackCollision();
 
 	//硬编码加载音效
@@ -50,14 +51,18 @@ AWeaponItem::AWeaponItem()
 void AWeaponItem::BeginPlay()
 {
 	Super::BeginPlay();
+
+	AttackCollision->OnComponentBeginOverlap.AddDynamic(this, &AWeaponItem::OnAttackCollisionOverlapBegin);
+	AttackCollision->OnComponentEndOverlap.AddDynamic(this, &AWeaponItem::OnAttackCollisionOverlapEnd);
+
+	ActiveAttackCollision();
 }
 
 void AWeaponItem::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	Super::OnOverlapBegin(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
 
-	AttackCollision->OnComponentBeginOverlap.AddDynamic(this, &AWeaponItem::OnAttackCollisionOverlapBegin);
-	AttackCollision->OnComponentEndOverlap.AddDynamic(this, &AWeaponItem::OnAttackCollisionOverlapEnd);
+
 
 	//范围内是否有实体，并且为可拾取状态
 	if (OtherActor && WeaponState==EWeaponState::EWS_CanPickup)
@@ -230,7 +235,7 @@ void AWeaponItem::ActiveAttackCollision()
 	//指定当前的碰撞类型
 	AttackCollision->SetCollisionObjectType(ECC_WorldDynamic);
 	//只响应pawn，其他不响应
-	AttackCollision->SetCollisionResponseToAllChannels(ECR_Ignore);
+	//AttackCollision->SetCollisionResponseToAllChannels(ECR_Ignore);
 	AttackCollision->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 }
 

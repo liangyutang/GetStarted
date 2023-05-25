@@ -414,3 +414,23 @@ void ABaseEnemy::AttackEnd()
 	}
 }
 
+float ABaseEnemy::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator,
+	AActor* DamageCauser)
+{
+	//¼õÑª
+	if (Health - Damage <= 0.0f)
+	{
+		Health = FMath::Clamp(Health - Damage, 0.0f, MaxHealth);
+		//TODO Die();
+	}
+	else
+	{
+		Health -= Damage;
+	}
+
+	//¸üÐÂHealthBar
+	HealthBar->SetPercent(Health / MaxHealth);
+
+	return Health;
+}
+
