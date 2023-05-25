@@ -10,6 +10,7 @@
 #include "GamePlayer/WeaponItem.h"
 #include "GetStarted/Characters/Enemy/BaseEnemy.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AMainPlayer::AMainPlayer()
@@ -533,11 +534,22 @@ void AMainPlayer::DeathEnd()
 
 	//1秒后，调用RestartLevel()
 	FTimerHandle DeathTimerHandle;
-	auto Lambda = [this]()
+	const auto Lambda = [this]()
 	{
-		//TODO RestartLevel();
+		RestartLevel();
 	};
 
 	GetWorldTimerManager().SetTimer(DeathTimerHandle, FTimerDelegate::CreateLambda(Lambda), 1.0f, false);
+}
+
+void AMainPlayer::RestartLevel()
+{
+	DeathNum++;
+	//重启关卡
+	//获取关卡名
+	const FString LevelName=UGameplayStatics::GetCurrentLevelName(this);
+	//打开关卡
+	UGameplayStatics::OpenLevel(this, FName(*LevelName));
+	
 }
 

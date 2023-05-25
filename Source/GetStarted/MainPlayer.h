@@ -136,6 +136,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Hit Effect")
 	USoundCue* HitSound;
 
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
+	int DeathNum = 0;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -203,4 +206,6 @@ public:
 	void DeathEnd();
 
 	FORCEINLINE bool IsAlive() const { return MovementStatus != EPlayerMovementStatus::EPMS_Dead; }
+
+	void RestartLevel();
 };

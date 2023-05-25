@@ -167,5 +167,5 @@ public:
 
 	FORCEINLINE bool IsAlive() const { return EnemyMovementStatus != EEnemyMovementStatus::EEMS_Dead; }
 
-	bool HasValidTarget();
+	bool HasValidTarget() const;
 };

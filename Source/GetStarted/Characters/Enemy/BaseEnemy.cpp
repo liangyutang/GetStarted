@@ -474,7 +474,7 @@ void ABaseEnemy::DeathEnd()
 
 	//1Ãëºó£¬Ïú»Ù
 	FTimerHandle DeathTimerHandle;
-	auto Lambda = [this]()
+	const auto Lambda = [this]()
 	{
 		Destroy();
 	};
@@ -482,7 +482,7 @@ void ABaseEnemy::DeathEnd()
 	GetWorldTimerManager().SetTimer(DeathTimerHandle, FTimerDelegate::CreateLambda(Lambda), 1.0f, false);
 }
 
-bool ABaseEnemy::HasValidTarget()
+bool ABaseEnemy::HasValidTarget() const
 {
 	return Cast<AMainPlayer>(UGameplayStatics::GetPlayerPawn(this, 0))->MovementStatus != EPlayerMovementStatus::EPMS_Dead;
 }

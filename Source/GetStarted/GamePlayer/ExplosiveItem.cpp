@@ -7,6 +7,7 @@
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
+#include "Characters/Enemy/BaseEnemy.h"
 
 AExplosiveItem::AExplosiveItem()
 {
@@ -24,7 +25,8 @@ void AExplosiveItem::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AA
 	{
 		//触碰Trigger的物体判断,是否为玩家
 		const AMainPlayer* MainPlayer = Cast<AMainPlayer>(OtherActor);
-		if (MainPlayer)
+		const ABaseEnemy* BaseEnemy = Cast<ABaseEnemy>(OtherActor);
+		if (MainPlayer || BaseEnemy)
 		{
 			//是否播放粒子系统
 			if (OverlapParticle)
